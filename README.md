@@ -6,10 +6,10 @@ Quatre Indice et Un mot is a textual game that show for the player four words an
 - A set of scripts written in sh (sh, bourne shell) automated to make the program as fluid as possible.
 
 # Features
-## A player must have an account on the game to be able to play.
+#### A player must have an account on the game to be able to play.
   - Passwords are hashed before being saved.
   - A control system is set up for a minimum of security of the registered passwords
-## The game features four levels :
+#### The game features four levels :
   - Easy
   - Medium 
   - Difficult 
