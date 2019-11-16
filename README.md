@@ -8,9 +8,25 @@ Quatre Indice et Un mot is a textual game that show for the player four words an
 # Features
 #### A player must have an account on the game to be able to play.
   - Passwords are hashed before being saved.
-  - A control system is set up for a minimum of security of the registered passwords
+  - A control system is set up for a minimum of **security** of the registered passwords
+  - The hash function is actually a program written in C.
 #### The game features four levels :
   - Easy
   - Medium 
   - Difficult 
   - Challenge
+#### While playing
+  - The player can save the game in progress before leaving it.
+  - The player can leave the game in progress without save it.
+  
+  
+# Project
+- _Open source project_.
+
+# University
+- _**University Ibn Tofail of Kenitra (Morocco)**_
+- Faculty of Sciences
+- Computer Science department
+- Mathematical Science and Computer Science 
+- Semester 3 (2018/2019)
+- Mohamed Faouzi Faouzoudine
