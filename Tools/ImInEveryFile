@@ -1,0 +1,115 @@
+ ###########################################################################################################################################
+ ########################     CE FICHIER DOIT ÊTRE INCLU DANS CHAQUE SCRIPT VOULANT L'UTILISER, DE LA FAÇON SUIVANTE #######################
+ ########################                           . Tools/ImInEveryFile                                            #######################
+ ###########################################################################################################################################
+
+								#######################DÉFINITIONS DES ALIAS#########################
+alias necho="echo -n"
+
+							#______________________________________________________________________________#
+							#### ALIAS DES FICHIERS, RACCOURCISSEMENT DES PATHS POUR LA PROGRAMMATION ######
+							################################################################################
+mkdir -p '.Datas/.GENERAL/' 2>/dev/null
+       _SAVE=".Datas/.SAVE/Sauvegardes"
+      _LEVEL="Niveaux/TiragesNiveau"
+     _PLAYER=".Datas/Joueurs"
+     _GSTORY=".Datas/.GENERAL/STORY"
+    _TIRAGES=".Datas/.historique/historique_${login}/tirage.dat"
+  _TEMP_SAVE=".Datas/.historique/historique_${login}/.Sauvegardes_Temporaire"
+ _SESSIONLOG=".Datas/.historique/historique_${login}/session.log"
+ _HISTORIQUE=".Datas/.historique/historique_${login}"
+_TEMP_TIRAGE=".Datas/.historique/historique_${login}/.historique_temporaire_des_tirage"
+
+		##################################################################################
+		########ON MET LE TERMINAL DANS SON ETAT NORMAL PUIS IN SAUVEGARDE CET ETAT#######
+		##################################################################################
+stty sane
+_OLDSTTY="$(stty -g)"
+
+
+
+##LA FONCTION CONTENANT LES COULEURS ET LES MIS EN FORME DANS CHAQUE FICHIER
+color()
+{
+	null='\e[0m'
+	grisG='\e[4;2m'
+	gras='\e[1m'
+	degrade='\e[2m'
+	rougeS='\e[31m'
+	grasRouge='\e[1;31m'
+	bleu='\e[34m'
+	bleuCiel="\e[36m"
+	bgBleuCiel='\e[46m'
+	bleuPal="\e[1;36m"
+	grasBleu='\e[1;34m'
+	blueBg='\e[44m'
+	vert='\e[32m'
+	grasVert='\e[1;32m'
+	jauneS='\e[33m'
+	grasJaune='\e[1;33m'
+	soulign1='\e[4:1m'
+	soulign2='\e[4:2m'
+	rose='\e[35m'
+	grasRose='\e[1;35m'
+	italic='\e[3m'
+	blackBg='\e[40m'
+	redBg='\e[41m'
+	greenBg='\e[42m'
+	whiteBgGrasNoir="\e[1;47;30m"
+	noir="\e[30m"
+}
+
+				######################################################################
+				#####  CRÉATION ET AJOUTS DES DROITS POUR LES TOUS LES FICHIERS ######
+				######################################################################
+verifyFile()
+{
+	#On vérifie si tous les fichier nécessaires n'existent pas et on les créent
+	if [ ! -d '.Datas/.historique' ]
+	then mkdir -p .Datas/.historique
+	fi 2>/dev/null
+	
+	if [ ! -d  '.Datas/.SAVE/' ]
+	then mkdir -p   '.Datas/.SAVE/'
+		 chmod +rwx '.Datas/.SAVE/'
+	fi 2>/dev/null
+
+	if [ ! -f "${_SAVE}"1 ];then touch "${_SAVE}"1;fi
+	if [ ! -f "${_SAVE}"2 ];then touch "${_SAVE}"2;fi
+	if [ ! -f "${_SAVE}"3 ];then touch "${_SAVE}"3;fi
+	if [ ! -f "${_SAVE}"4 ];then touch "${_SAVE}"4;fi
+
+	if [ ! -f  '.Datas/Joueurs' ];then touch '.Datas/Joueurs'
+		 				chmod +rwx '.Datas/Joueurs';fi 2>/dev/null 
+
+	if [ ! -e .Datas/.GENERAL/.PUID ];then	mkdir -p .Datas/.GENERAL/
+						touch .Datas/.GENERAL/.PUID;fi
+
+	chmod -R +rwx * 2>'/dev/null'
+	chmod -R +rwx .Datas/* 2>'/dev/null'
+}
+
+
+									#########################################################
+									####### FONCTION QUI AFFICHE  UN MESSAGE D'AIDE #########
+									#########################################################
+RETOUR_VERS_LE_MENU_PRINCIPAL_()
+{
+	if [ "$retour" -ne 0  ]
+	then 
+		necho "\n${gras}\t    Si vous voulez retourner dans le ${grasBleu}"
+		 echo "_MENU PRINCIPAL_${null} tapez ${grasJaune}--mM${null}"
+	fi
+
+}
+
+###JE SUPPRIME TOUS LES ESPACES QUI SE TROUVENT DANS LE FICHIERS ".Datas/Sauvegarde" et
+##'.Datas/Joueurs'
+sed -i "/^$/d" "${_SAVE}"*  >/dev/null 2>&1
+sort -o "${_SAVE}"1 "${_SAVE}"1 >/dev/null 2>&1
+sort -o "${_SAVE}"2 "${_SAVE}"2 >/dev/null 2>&1
+sort -o "${_SAVE}"3 "${_SAVE}"3 >/dev/null 2>&1
+sort -o "${_SAVE}"4 "${_SAVE}"4 >/dev/null 2>&1
+
+sed -i "/^$/d" "${_PLAYER}"	  >/dev/null 2>&1
+sort -o "${_PLAYER}" "${_PLAYER}" >/dev/null 2>&1

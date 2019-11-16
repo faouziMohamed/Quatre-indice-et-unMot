@@ -1,0 +1,173 @@
+####### POUR RETOURNER DANS LE MENU PRÉCEDENT #########
+retournerMenuPrecedent()
+{
+	if [ "$retour" -ne 0  ]
+	then 
+		necho "\n\t    Si vous voulez retourner dans le ${grasBleu}"
+		 echo "_MENU PRÉCEDENT_${null} tapez ${grasJaune}-m${null}"
+	fi	
+}
+
+
+######################################################################################################
+############################ ENTÊTE POUR LE CHANGEMENT DU NOM D'UTILISATEUR ##########################
+######################################################################################################
+
+headerUsername()
+{
+	esp="                            "
+	esp1="                            "
+	line="$esp$esp1                        "
+
+	necho "${blackBg}$line${gras}\n"
+	necho "${esp}QUATRE "
+	necho "${grasVert}INDICES "
+	necho "ET "
+	necho "${null}${blackBg}${gras}UN "
+	necho "MOT${esp1}"
+
+	#NOM PARTIE COURANTE
+	necho ""
+	echo "${rougeS}${soulign2}\n________________________________________________________________________________"
+	necho "${null}${soulign2}${gras}----------------------"
+	necho "${null}${gras}"
+	necho "${grasJaune} MODIFICATION DU NOM D'UTILISATEUR ${null}"
+	necho "${gras}${soulign2}"
+	necho "-----------------------" 
+	echo "${null}"
+}
+
+
+
+
+
+#Fonction de Vérificaton si le NewLogin ne contient pas des caractères interdits et autres
+VERIFIER_LES_ERREURS_DU_USER_NAME_()
+{
+	heure="$(date +%T)"
+	#Test sur le nombre de caractères
+	if   [ "$nbchar" -eq 0 ]
+	then 
+		necho "\n \t\t\t  ${rose}_Vous n'avez rien saisie_${null} "
+	    echo "   |\n   \__${heure} : ${rose}RIEN N'A ÉTÉ SAISIE${null}" >>"${_SESSIONLOG}"
+
+		sleep 1.5 ; clear
+		USER_NAME_ 
+		return 0
+
+	elif [ "$NewLogin" = "-m" ]
+	then 
+		necho "   |\n   |→→ ${heure}: ${bleu}RETOUR VERS L'INTERFACE " >>"${_SESSIONLOG}"
+		printf "MENU(Fin de Modification" >>"${_SESSIONLOG}"
+		echo " de l'username)${null}\n  /\n  |\n  |\n /" >>"${_SESSIONLOG}"
+		exit 0
+
+	elif [ "$nbchar" -lt 4 -o "$nbchar" -gt 14 -o "$nbWord" -gt 1 ]
+	then
+		
+		clear
+		if   [ "$nbchar" -lt 4  ]
+		then
+			echo "   |\n   |→→ ${heure}: ${rougeS}NOMBRE DE CARACTÈRE INFÉRIEUR À 4${null}" >>"${_SESSIONLOG}"
+			USER_NAME_ '_short'
+			return 0	
+		elif [ "$nbchar" -gt 14 ]
+		then
+			echo "   |\n   |→→ ${heure}: ${rougeS}NOMBRE DE CARACTÈRE SUPÉRIEUR À 14${null}" >>"${_SESSIONLOG}" 
+			USER_NAME_ '_long'
+			return 0
+		fi
+
+		if [ "$nbWord" -gt 1 ]
+		then
+			echo "   |\n   |→→ ${heure}: ${rougeS}LOGIN CONTENANT DES ESPACES${null}" >>"${_SESSIONLOG}"
+			USER_NAME_ '_space' 
+			return 0
+		fi 		
+	fi
+
+	#On cherche si le NewLogin ne contient pas le caractère '-' et/ou ':'
+	if   ( (echo "$NewLogin"|grep '-'   )>/dev/null 2>&1 ) ||\
+	     ( (echo "$NewLogin"|grep :     )>/dev/null 2>&1 )
+	then clear
+		necho "   |\n   |→→ ${heure}: ${rougeS}LE LOGIN CONTIENT LE CARACTÈRE" >>"${_SESSIONLOG}"
+		 echo " ${null}'${jauneS}:${null}' ${rougeS}OU ${null}'${jauneS}-${null}'" >>"${_SESSIONLOG}"
+		USER_NAME_ '_Mamnou3'
+		return 0
+	fi 
+
+}
+
+
+
+
+
+######### Fonction pour le mis_à-jour des données pour le changement du nom d'utilisateur
+USER_NAME_CHANGED_THEN_UPDATE_FILES_()
+{
+	mv "${_HISTORIQUE}" ".Datas/.historique/historique_${NewLogin}" 2>/dev/null
+
+	### MIS-À-JOUR DU NOM D'UTILISATEUR DANS LE FICHIER ${_PLAYER}
+	sed -i "s/^${login}/${NewLogin}/" "${_PLAYER}" >/dev/null 2>&1
+	             sort -o "${_PLAYER}" "${_PLAYER}" >/dev/null 2>&1
+
+	### MIS-À-JOUR DU NOM D'UTILISATEUR DANS LE FICHIER ${_SAVE}
+	sed -i "s/^${login}/${NewLogin}/" "${_SAVE}" >/dev/null 2>&1
+	               sort -o "${_SAVE}" "${_SAVE}" >/dev/null 2>&1
+}
+
+
+
+
+
+
+
+
+######################################################################################################
+############################ ENTÊTE POUR LE CHANGEMENT DU NOM D'UTILISATEUR ##########################
+######################################################################################################
+
+HEADER_USERMAIL_()
+{
+
+	esp="                            "
+	esp1="                            "
+	line="$esp$esp1                        "
+
+	necho "${blackBg}$line${gras}\n"
+	necho "${esp}QUATRE "
+	necho "${grasVert}INDICES "
+	necho "ET "
+	necho "${null}${blackBg}${gras}UN "
+	necho "MOT${esp1}"
+
+	#NOM PARTIE COURANTE
+	necho ""
+	echo "${grasBleu}${soulign2}\n________________________________________________________________________________"
+	necho "${null}${soulign2}${gras}-------------------------------"
+	necho "${null}${gras}"
+	necho "${bleuPal} CHANGEMENT D'EMAIL ${null}"
+	necho "${gras}${soulign2}"
+	necho "-----------------------------" 
+	echo "${null}"
+
+}
+
+
+
+######### Fonction pour le mis_à-jour des données pour le changement de l'email
+EMAIL_CHANGED_THEN_UPDATE_USER_S_DATAS_()
+{
+	
+	######MIS-À-JOUR DES COORDONNÉES DE CONNEXION DE $login
+
+	_OLD_LINE="^${login}:\(.\+\):\(.\+\)|\(.\+\)|\(.\+\)"
+
+	##### SUR LA COMANDE "sed" CETTE FOIS-CI LE DÉLIMITEUR EST LE CARACTÈRE "#"
+	sed -i "s#${_OLD_LINE}#${login}:\1:\2|\3|${email}#" "${_PLAYER}" >/dev/null 2>&1
+	                               sort -o "${_PLAYER}" "${_PLAYER}" >/dev/null 2>&1
+}
+
+
+##EOF
+	

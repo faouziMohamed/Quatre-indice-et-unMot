@@ -1,0 +1,488 @@
+header()
+{
+	esp="                            "
+	esp1="                            "
+	line="$esp$esp1                        "
+	echo "${blueBg}$line${gras}"
+	necho "${esp}QUATRE "
+	necho "${grasVert}INDICES "
+	necho "ET "
+	necho "${null}${blueBg}${gras}UN "
+	necho "MOT${esp1}"
+
+	echo "${gras}${soulign2}"
+	necho "________________________________________________________________________________"
+	necho "${null}${soulign2}${gras}--------------------------------"
+
+	necho "${null}${gras}"
+	necho "${bleuPal} INSCRIPTION ${null}"
+	necho "${gras}${soulign2}"
+	necho "-----------------------------------" 
+	echo "${null}"
+}
+
+               ##########################################################################################################################
+               ############################################PARTIE DE CONTRÔLE DU LOGIN###################################################
+               ##########################################################################################################################
+
+
+#Fonction de Vérificaton si le login ne contient pas des caractères interdits et autres
+VERIFICATION_SI_LE_USERNAME_EST_CORRECT_()
+{
+	#Test sur le nombre de caractères
+	if [ "$nbchar" -eq 0 ]
+	then 
+		
+		necho "\n \t\t\t  ${rose}_Vous n'avez rien saisie_${null} "
+		sleep 1.5 ; clear
+		LECTURE_DU_LOGIN_
+	elif [ "$login" = "--mM" ]
+	then #"mM" veut dire 'main Menu'
+		sh QIUM.sh ; exit 0
+
+	elif [ "$login" = "--connect" ]
+	then
+		Sources/user/connect.sh "$existUser" ; exit 0 #l'utilisateur va se connecter avec le nom de compte "$login"
+
+	elif [ "$nbchar" -lt 4 -o "$nbchar" -gt 14 -o "$nbWord" -gt 1 ];then
+		
+		clear
+
+		if   [ "$nbchar" -lt 4  ];then LECTURE_DU_LOGIN_ '_short' ;	
+		elif [ "$nbchar" -gt 14 ];then LECTURE_DU_LOGIN_ '_long'; fi
+
+		if [ "$nbWord" -gt 1 ];then	LECTURE_DU_LOGIN_ '_space' ;	fi 		
+	fi
+
+	#On cherche si le login ne contient pas le caractère '-' et/ou ':'
+	if ( (echo "$login"|grep '-') || (echo "$login"|grep :) )>/dev/null 2>&1
+	then clear
+		 LECTURE_DU_LOGIN_ '_Mamnou3'
+	fi 
+
+}
+
+
+#Fonction de Vérification si le login n'existe pas déjà
+VERIFICATION_SI_USERNAME_EXISTE_DEJA_()
+{
+	if test "$login" = "$testLog"
+	then clear
+		existUser="$login"
+		LECTURE_DU_LOGIN_ '_exist'
+	fi
+}
+
+
+                          ##################Création du nom d'utilisateur (F. PRINCIPAL)####################
+LECTURE_DU_LOGIN_()
+{
+	nbchar=0
+	nbWord=0
+	
+	header
+
+	if   [ "$1" = '_exist' ]
+	then
+		necho "\n\t\t ${gras} _Le nom d'utilisateur ${grasBleu}"
+		 echo "\"$testLog\"${null}${gras} existe déjà_${null}"
+		
+		necho "\t${italic}Pour se connecter avec le nom de compte ${grasJaune}"
+		 echo "\"$login\"${null}${italic} tapez ${grasJaune}--connect${null}"
+		sleep 1
+
+	elif [ "$1" = '_Mamnou3' ]
+	then
+		necho "\n\t\t  ${gras}_Les caractères suivants '${grasBleu}-${null}${gras}'"
+		necho " '${grasBleu}:${null}${gras}' ${grasRouge}sont interdits${null}_"
+		sleep 1
+
+	elif [ "$1" = '_short' ]
+	then
+		necho "\n\t ${gras}_Le Nom d'utilisateur ${grasRouge}"
+		necho "ne doit pas avoir moins de 4 caractères_${null}\n"
+		sleep 1
+
+	elif [ "$1" = '_long' ]
+	then
+		necho "\n\t ${gras}_Le Nom d'utilisateur ${grasRouge}"
+		necho "ne doit pas avoir plus de 14 caractères_${null}\n"
+		sleep 1		
+
+	elif [ "$1" = '_space'  ]
+	then
+		necho "\n\t    ${gras}_Le nom d'utlisateur ${grasRouge}"
+		necho "ne doit pas contenir des espaces !!_${null}\n"
+		sleep 1
+	fi
+	#Un message sera affiché lors d'un deuxième essaie de création du login
+	RETOUR_VERS_LE_MENU_PRINCIPAL_
+
+	#L'utilisateur va saisir le nom d'utilisateur
+	necho "\n${gras}${blackBg} ${soulign1}Nom d'utilisateur:${null}${grasJaune}  "
+	read login
+	echo "${null}"
+	retour=1
+
+	#Nombre de caractère et Nombre de Mots
+	nbchar="$(expr length "$login")"
+	nbWord="$(echo "$login"| wc -w)"
+
+	#Vérificaton si le login ne contient pas caractère interdits et autres
+	VERIFICATION_SI_LE_USERNAME_EST_CORRECT_
+
+	##Recherche du login dans de le fichier .Datas/Joueurs
+	testLog="$(egrep -w ^"$login" '.Datas/Joueurs'|cut -f1 -d:)"
+
+	#Vérification si le login n'existe pas déjà
+	VERIFICATION_SI_USERNAME_EXISTE_DEJA_
+
+
+}
+
+
+
+
+            #################################################################################################################################
+            ############################################PARTIE DE CONTRÔLE DU MOT DE PASSE###################################################
+            #################################################################################################################################
+
+                                          
+#___________________________________________________________________________________________________________________________________________#
+################### FONCTION QUI LIT LE MOT DE PASSE EN REMPLAÇANT LES CARACTÈRES SAISIES PAR DES ÉTOILES "*" ###############################
+
+PASSWORD_READER_()
+{    
+	#SAUVEGARDE DE L'ÉTAT ACTUEL DU TERMINAL
+	_OLDSTTY="$(stty -g)"
+
+	#LA VARIABLE 'BS' PREND PREND LE CARACTÈRE GÉNÉRÉ PAR LA TOUCHE "backspace" 
+	BS=$(tput kbs) 	
+
+	###ON DÉSACTIVE LE MODE CANONIQUE ET L'ECHO DES INPUTS 
+    stty -icanon -echo
+    
+    #INITIALISATION DE LA VARIABLE QUI VA PRENDRE LE MOT DE PASSE
+    _MOT_DE_PASSE=
+
+    #####SAISIE DU MOT DE PASSE
+    while true
+    do  CHAR=$(head -c1)                  ###LECTURE D'UNE SEULE CARACTÈRE
+
+        case "$CHAR" in
+
+        "$BS")  if [ -n "$_MOT_DE_PASSE" ] 					 ########LORS DE L'APPUIE SUR LA TOUCHE BACKSPACE, LES ACTIONS SUIVANTS SONT FAITES
+        		then _MOT_DE_PASSE=${_MOT_DE_PASSE%?}        ###ON SUPPRIME LE DERNIER CARACTÈRE PAR SUBSTITUTION
+                    printf "\b \b"		  ###ON SUPPRIME LE DERNIER ÉTOILE "*" DANS LA SORTIE STANDARD
+                fi 
+                ;;
+
+           "")  printf "\n"; break ;;     ###ON AFFICHE UN SAUT DE LIGNE LORS DE L'APPUIE SUR "RETURN" "ENTRER"
+
+            *)  printf '*'			      ###AFFICHAGE D'UNE ÉTOILE PAR SAISIE
+                _MOT_DE_PASSE="${_MOT_DE_PASSE}${CHAR}"  	  #AJOUT DE "CHAR" SUR "_MOT_DE_PASSE"
+               ;;
+        esac
+    done
+
+    stty "${_OLDSTTY}" >/dev/null 2>&1    ###RESTAURATION DU MODE NORMAL DU TERMINAL
+}
+
+##Test sur le nombre de caractères et si le mot de passe est égal au nom d'utilisateur
+VERIFICATION_DES_ERREURS_DU_MOT_DE_PASSE_()
+{
+	
+	if [ "$nbchar" -eq 0 ]
+	then 
+		clear
+		LECTURE_DU_MOT_DE_PASSE_ '_0char'
+
+	elif [ "$pass" = "--mM" ]
+	then #"mM" veut dire 'main Menu'
+		sh QIUM.sh
+		exit 0
+
+	elif [ "$nbchar" -lt 4 ]
+	then
+		clear
+		LECTURE_DU_MOT_DE_PASSE_ '_short'
+
+	fi
+
+	if [ "$pass" = "$login" ]
+	then
+		clear		
+		LECTURE_DU_MOT_DE_PASSE_ '_diff'
+
+	fi
+}
+
+#fonction pour resaisir le mot de passe 
+CONFIRMATION_DU_MOT_DE_PASSE_()
+{
+
+	header
+
+	if [ "$1" = '_new' ]
+	then
+		necho "\n \t\t\t ${rougeS}_Mot de Passe Incorrect_${null}"
+		sleep 1
+		necho "\n \t  Des difficultés? tapez ${grasJaune}--new"
+		 echo "${null} pour créer un nouveau mot de passe"
+		sleep 0.5
+
+	elif [  "$1" = '_0char' ]
+	then
+		necho "\n \t\t\t  ${rose}_Vous n'avez rien saisie_${null}\n "
+		sleep 1.5
+	fi
+
+	 echo "\n ${soulign1}${gras}Nom d'utilisateur:${null}${grasJaune}  $login "
+	necho " ${null}${soulign1}${gras}Mot de Passe:${null}${grasJaune}  ********${null} "
+
+	necho "\n\n${gras}${blackBg} ${soulign1}Confirmer le Mot de Passe:${null}${grasJaune} "
+	
+	PASSWORD_READER_ ; passV="${_MOT_DE_PASSE}" 
+	retour=1
+
+	echo "${null}"
+
+	nbchar="$(expr length "$passV")"
+
+	if [ "$nbchar" -eq 0 ]
+	then
+		clear
+		CONFIRMATION_DU_MOT_DE_PASSE_ '_0char'
+
+	elif [ "$passV" = "--new"  ]
+	then
+		clear
+		retour=0
+		LECTURE_DU_MOT_DE_PASSE_
+		
+	elif [ "$passV" != "$pass" ]
+	then
+		clear
+		CONFIRMATION_DU_MOT_DE_PASSE_ '_new'
+
+	elif [ "$passV" = "$pass"  ]
+	then
+		necho "\n \t\t\t Mot de passe Confirmé ${vert}✔${null}\n"
+		sleep 1.5
+
+		clear
+		DESCRIPTION_DU_JOUEUR_ #Appel du fonction "DESCRIPTION_DU_JOUEUR_" définit ci-bas
+		exit 0
+	fi
+}
+                                       
+
+                                        ###########Création du Mot de passe (F. PRINCIPAL)##########
+LECTURE_DU_MOT_DE_PASSE_()
+{
+	header
+
+	if [  "$1" = '_0char' ]
+	then
+		necho "\n \t\t\t  ${rose}_Vous n'avez rien saisie_${null}\n "
+		sleep 1.5
+		
+	elif [ "$1" = '_short' ]
+	then
+		necho "\n \t\t\t  ${rose}_Mot de Passe trop courte_${null} \n"
+		sleep 1.5
+
+	elif [ "$1" = '_diff' ]
+	then
+		echo "\n\t     ${rougeS}_Le Mot de passe doit être différent du nom d'Utilisateur_${null}"
+		sleep 1.5
+	fi
+
+	RETOUR_VERS_LE_MENU_PRINCIPAL_
+	#Saisie du Mot de passe
+	echo "\n ${soulign1}${gras}Nom d'utilisateur:${null}${grasJaune}  $login${null} "
+	necho "${gras}${blackBg} ${soulign1}Mot de Passe:${null}${grasJaune} "
+	
+	PASSWORD_READER_ ; pass="${_MOT_DE_PASSE}"
+	retour=1
+
+	echo "${null}"
+	#Fin de la saisie du mot de passe
+
+	#Nombre de carractères du mot de passe
+	nbchar="$(expr length "$pass")"
+
+	#Test sur le nombre de caractères et si le mot de passe est égal au nom d'utilisateur
+	VERIFICATION_DES_ERREURS_DU_MOT_DE_PASSE_
+
+	clear
+	#On va demander à l'utilisateur de saisie encore le mot de passe
+	CONFIRMATION_DU_MOT_DE_PASSE_
+}
+
+
+
+
+
+#Fonction qui vérifie si l'anée est correct
+DESCR_ANNEE_()
+{
+
+	header
+
+	if [ "$1" = '_inc' ]
+	then
+		echo "\n \t\t\t  ${rose}_Année de Naissance Incorrect_${null} "
+	   necho "\n\t L'année de naissance doit être un nombre"
+		echo " ${grasBleu}compris entre 1900 et 2019${null} "
+
+	elif [ "$1" = '_0char' ]
+	then
+		necho "\n \t\t\t  ${null}${rose}_Vous n'avez rien saisie_${null}\n "
+		sleep 1.5
+
+	fi
+
+	echo "\n ${soulign1}${gras}Nom d'utilisateur  :${null}${grasJaune}  $login${null} "
+	echo "${gras} ${soulign1}Mot de Passe${null}${gras}       :${grasJaune}  *******${null} "
+	necho "${gras}${blackBg} ${soulign1}Année de naissance :${null}${grasJaune}${italic} "
+	read annee
+
+	nbchar=$(expr length "$annee")
+
+	if [ "$nbchar" -eq 0 ]
+	then 
+		clear	
+		DESCR_ANNEE_ '_0char'
+
+	#Vérification si "$annee est un nombre"
+	elif ((expr $annee + 0 ) >/dev/null 2>&1 )&&(test "$annee" -ge 1900 -a "$annee" -le 2019 );then
+		clear
+		header
+
+		echo "\n ${soulign1}${gras}Nom d'utilisateur  :${null}${grasJaune}  $login ${null}"
+		echo "${gras} ${soulign1}Mot de Passe${null}${gras}       :${grasJaune}  *******${null} "
+		echo "${gras} ${soulign1}Année de naissance :${null}${grasJaune}  $annee ${null}"
+	
+	else
+		clear
+		DESCR_ANNEE_ '_inc'
+	fi
+}
+
+		
+#Fonction qui lit l'email du joueur et le vérifie s'il est correct
+DESCR_E_MAIL_()
+{
+
+	header
+
+	if [ "$1" = '_0char' ];then
+		necho "\n \t\t\t ${null} ${rose}_Vous n'avez rien saisie_${null}\n "
+		sleep 1.5
+
+	elif [ "$1" = '_inc' ];then
+		echo "\n \t\t\t  ${rose}_Adresse E-mail Incorrect_${null} "
+	fi
+
+	echo "\n ${soulign1}${gras}Nom d'utilisateur  :${null}${grasJaune}  $login ${null}"
+	echo "${gras} ${soulign1}Mot de Passe${null}${gras}       :${grasJaune}  *******${null} "
+	echo " ${soulign1}${gras}Année de naissance :${null}${grasJaune}  $annee ${null}"
+    necho "${gras}${blackBg} ${soulign1}Email${blackBg}"
+    necho "${gras}              :${null}${grasJaune}${italic}  "
+
+	read email
+
+	echo "${null}"
+	nbchar=$(expr length "$email")
+
+	if [ "$nbchar" -eq 0 ];then 
+		clear		
+		DESCR_E_MAIL_ '_0char' #Appel de la fonction "DESCR_E_MAIL_"
+
+	#Vérification si "$email" est un adresse email valide (juste la syntaxe d'une adresse email)
+	#Vérification si "$email" est un adresse email valide
+	#valide : s'Il y'a une chaine avant et après le '@'
+	#valide : s'il y'a le '.' après une chaine qui est après le '@'
+	#valide : s'il n'y a pas d'espaces dans l'email
+	elif ((echo "$email"|egrep ".+@"             ) >/dev/null 2>&1 )&&\
+		 ((echo "$email"|egrep "@.+\..+"         ) >/dev/null 2>&1 )&&\
+		 ((test "$(echo "$email"|wc -w )" -eq 1  ) >/dev/null 2>&1 )
+	then		
+		
+		err=0
+	    while [ true ]
+	    do
+	    	clear
+	    	header
+
+	    	if test "$err" -eq 1 
+	    	then
+	    		necho "\n\t\t${null} S'il vous plait veuillez répondre par "
+	    		 echo "\"${grasBleu}oui${null}\" ou par \"${grasRouge}non${null}\""
+	    	fi
+
+	        echo 
+			echo " ${soulign1}${gras}Nom d'utilisateur  :${null}${grasJaune}  $login ${null}"
+			echo " ${soulign1}${gras}Mot de Passe${null}${gras}       :${grasJaune}  *******${null} "
+			echo " ${soulign1}${gras}Année de naissance :${null}${grasJaune}  $annee ${null}"
+		    echo " ${soulign1}${gras}Email${null}${gras}              :${grasJaune}  $email ${null}"
+		   
+		    necho "\n${blackBg}${gras} L'email est-il correct ? [${grasBleu}O${null}${blackBg}"
+		    necho "${gras}/${grasRouge}N${null}${blackBg}${gras}] :${null} ${grasJaune} "
+		    read YN
+		    echo "${null}"
+		    case "$YN" in
+		    	o|O|OUI|Oui|oui) email="$(echo "$email"|tr A-ZÀÉÈÛÔÇÎÏ a-zàéèûôçîï)" >/dev/null 2>&1
+								break;;
+				 n|n|No|Non|NON) clear;DESCR_E_MAIL_;break;;
+				 			  *) sleep 1;err=1
+								;;
+			esac
+		done
+
+	else
+		clear
+		DESCR_E_MAIL_ '_inc' #Appel de la fonction "DESCR_E_MAIL_"
+	fi
+}
+
+
+
+#Le genre de l'utilisateur : HOMME ou FEMME
+Sexe_H_F_()
+{
+	header
+
+	if [ "$1" = '_inc' ]
+	then
+		necho "\n\n\t\t\t${null}${gras}Vous devrez répondre par"
+		 echo " ${grasBleu}H${null} ou ${grasVert}F${null} "
+		sleep 1
+	fi
+
+	necho "\n ${gras}${soulign1}Nom d'utilisateur  :${null}${grasJaune}  $login ${null}"
+	necho "\n ${gras}${soulign1}Mot de Passe${null}${gras}       :${grasJaune}  *******${null} "
+	necho "\n ${gras}${soulign1}Année de naissance :${null}${grasJaune}  $annee ${null}"
+    necho "\n ${gras}${soulign1}Email${null}${gras}              :${grasJaune}  $email ${null}"
+	necho "\n${blackBg} ${gras}${soulign1}Sexe ? [H/F]${null}"
+	necho "${gras}${blackBg}       :${null}${italic}${grasJaune}  "
+
+	read sexe
+
+	case "$sexe" in
+		h|H) echo "\t\t\t\t\t${null}${grasBleu}Homme${null}"
+			sexe="H";;
+		f|F) echo "\t\t\t\t\t${null}${grasVert}Femme${null}"
+			sexe="F";;
+		  *) 
+			clear
+			Sexe_H_F_ '_inc'
+			;;
+	esac
+
+}
+
+
+
+#EOF

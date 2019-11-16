@@ -1,0 +1,182 @@
+header()
+{
+	#date="$(date |cut -f1 -d,)"
+	esp="                            "
+	esp1="                            "
+	line="$esp$esp1                        "
+	echo "${blackBg}$line${gras}"
+	necho "${esp}QUATRE "
+	necho "${grasVert}INDICES "
+	necho "ET "
+	necho "${null}${blackBg}${gras}UN "
+	necho "MOT${esp1}"
+
+	#NOM PARTIE COURANTE
+	necho ""
+	echo "${grasJaune}${soulign2}\n________________________________________________________________________________"
+	necho "${null}${soulign2}${gras}-----------------------------------"
+
+	necho "${null}${gras}"
+	necho "${bleuPal} MENU JOUEUR ${null}"
+	necho "${gras}${soulign2}"
+	necho "--------------------------------" 
+	echo "${null}"
+}
+
+
+
+deconnexion()
+{
+	trap "" 2
+	for affiche in "Sauvegarde des données de" "Déconnexion de " "À bientôt "; do
+			
+		date="$(date|cut -d , -f1)"
+		heure=$(date|cut -d , -f2|cut -f2 -d " ")
+
+		clear
+		echo "\n\n\n\n\n\n${grasBleu}${soulign2}________________________________________________________________________________${null}"
+		echo "\n\t\t\t${grasJaune} $date $heure${null}"
+		echo "${gras}**********************************${bleuPal} Déconnexion...${null}${gras} ******************************"
+	    echo "\t\t${blackBg}           $affiche $login ${rougeS}...          "
+		echo "${null}${gras}********************************************************************************${null}"
+		echo "\t\t\t\t\t\t${grasRose}    Quatre indices et un mot"
+		echo "${grasBleu}${soulign2}________________________________________________________________________________${null}"
+		sleep 1.1
+
+	done
+	trap 2
+}
+
+
+
+Lecture_du_choix_pris_Par_Le_Joueur_()
+{
+	case "$choix" in
+
+		1) echo "\t    ${grasBleu} Continuer la dernière partie sauvegardere partie sauvegarder${null}"
+			echo "|\n|→→ ${whiteBgGrasNoir}CHOIX NUMÉRO 1 : CONTINUER UNE PARTIE${null}">>"${_SESSIONLOG}"
+			sleep 0.5
+			clear
+
+			Sources/interface.sh "$login" "--continuer"
+			
+			clear
+			echo "|\n|→→ ${grasVert}AFFICHAGE DE L'INTERFACE MENU${null}">>"${_SESSIONLOG}"
+			Afficher_Le_Menu_
+			Lecture_du_choix_pris_Par_Le_Joueur_
+			exit 0
+	    	;;
+		2) echo "\t\t\t ${grasBleu} Commencer une nouvelle partie${null}"
+			echo "|\n|→→ ${whiteBgGrasNoir}CHOIX NUMÉRO 2 : COMMENCER UNE NOUVELLE PARTIE${null}">>"${_SESSIONLOG}"
+			sleep 0.5
+			clear
+
+			Sources/interface.sh "$login" "--nouvelle"
+			clear
+			echo "|\n|→→ ${grasVert}AFFICHAGE DE L'INTERFACE MENU${null}">>"${_SESSIONLOG}"
+			Afficher_Le_Menu_
+			Lecture_du_choix_pris_Par_Le_Joueur_
+			exit 0
+		    ;;
+		3) echo "\t\t\t ${grasBleu} Historique Personnel${null}"
+			sleep 0.5
+			clear
+			heure="$(date +%X)"
+			echo "|\n|\n|→→ ${whiteBgGrasNoir}CHOIX NUMÉRO 3 : Consultation de l'Historique à ${heure}${null}">>"${_SESSIONLOG}"
+			
+			sh Sources/user/Account.sh "$login" '--hist'
+			
+			clear
+			echo "|\n|→→ ${grasVert}AFFICHAGE DE L'INTERFACE MENU${null}">>"${_SESSIONLOG}"
+			Afficher_Le_Menu_
+			Lecture_du_choix_pris_Par_Le_Joueur_
+			exit 0
+			;;
+		4) echo "\t\t\t ${grasBleu} Se déconnecter${null}"
+			sleep 0.7
+
+			deconnexion "$login"
+
+			heure="$(date +%X)"
+			if [ "$sexe" = "H" ]
+			then echo "|\n|→ ${grasRose}déconnecté à ${heure}${null} ">>"${_SESSIONLOG}"
+		    else echo "|\n|→ ${grasRose}déconnectée à ${heure}${null}">>"${_SESSIONLOG}"
+		    fi
+			./QIUM.sh
+			exit 0;;
+		5) echo "\t\t\t ${grasRose} Mon compte${null}"
+		   echo "|\n|→→ ${whiteBgGrasNoir}CHOIX NUMÉRO 5 : MON COMPTE${null}">>"${_SESSIONLOG}"
+			sleep 0.5
+			clear
+
+			Sources/user/Account.sh "$login" '--myAcnt'
+
+			clear
+			echo "|\n|→→ ${grasVert}AFFICHAGE DE L'INTERFACE MENU${null}">>"${_SESSIONLOG}"
+			Afficher_Le_Menu_
+			Lecture_du_choix_pris_Par_Le_Joueur_			
+			exit 0
+			;;
+			
+		6) echo "\t\t\t ${grasRose} Quitter le Jeu${null}"
+			sleep 0.5
+			heure="$(date +%X)"
+
+			echo "|\n|\n|→ ${vert}Jeu quitter à ${heure}${null}">>"${_SESSIONLOG}"
+			echo "|__Session fermée||\n">>"${_SESSIONLOG}"
+			chmod -rwx "${_PLAYER}" "Niveaux/" >'/dev/null' 2>&1
+			exit 0;;
+			
+		*)  necho " \t\t\t\t${rougeS}_Choix incorect_${null}"
+			sleep 0.7
+
+			clear
+			Afficher_Le_Menu_
+			Lecture_du_choix_pris_Par_Le_Joueur_
+			exit 0
+			;;
+	esac 2>'/dev/null'
+}
+
+
+
+
+######## DETOURNEMENT DU CTRL-C #######
+Detournement_Du_controle_C_le_signal_SIGINT_()
+{	
+	trap "clear; Detournement_Du_controle_C_le_signal_SIGINT_; exit" 2
+	_10ligne="\n\n\n\n\n\n\n\n\n\n"
+	_4ligne="\n\n\n\n"
+	   necho "${_10ligne}${null} ${gras}    Vous avez décidé de ${grasJaune}quitter le jeu${null},"
+	    echo " ${gras}Confirmez-vous cette action${null} [${grasRouge}O${null}/${grasBleu}N${null}]? :  "
+	read choix
+
+	case "$choix" in
+	         o|O|Oui|OUI|oui) clear
+ 							  header
+							  echo "${_10ligne}${null}${whiteBgGrasNoir}\t\t\t\t Merci et à Bientôt ${null}${_4ligne}"
+							 necho "${gras}${soulign2}\n\n---------------------------"
+						 	 necho "-----------------------------------------------------${null}"
+							  sleep 1
+							  chmod -rwx "${_PLAYER}" "${_SAVE}" "Niveaux/*"  >'/dev/null' 2>&1
+							  exit 0
+							;;
+	    n|N|No|no|Non|NO|NON)
+							 clear
+							 Afficher_Le_Menu_
+							 Lecture_du_choix_pris_Par_Le_Joueur_
+							 exit 0
+							;;
+		                   *) echo "\t\t S'il vous plait veuillez répondre par ${grasRouge}oui ${null} ou${grasBleu} non${null}"
+							  sleep 2.1
+							  clear
+							  Detournement_Du_controle_C_le_signal_SIGINT_
+							  exit 0
+							;;
+	esac
+
+	trap 2
+}
+
+#EOF
+	

@@ -1,0 +1,473 @@
+header()
+{
+	esp="                            "
+	esp1="                            "
+	line="$esp$esp1                        "
+	echo "${blackBg}$line${gras}"
+	necho "${esp}QUATRE "
+	necho "${grasVert}INDICES "
+	necho "ET "
+	necho "${null}${blackBg}${gras}UN "
+	necho "MOT${esp1}"
+
+
+	echo "${gras}${soulign2}"
+	necho "________________________________________________________________________________"
+	necho "${null}${soulign2}${gras}-----------------------------"
+
+	necho "${null}${gras}"
+	necho "${bleuPal} NOUVEAU MOT DE PASSE ${null}"
+	necho "${gras}${soulign2}"
+	necho "-----------------------------" 
+	echo "${null}"
+}
+####LECTURE DU MOT DE PASSE
+PASSWORD_READER_()
+{    
+
+	#LA VARIABLE 'BS' PREND PREND LE CARACTÈRE GÉNÉRÉ PAR LA TOUCHE "backspace" 
+	BS=$(tput kbs) 	
+
+	###ON DÉSACTIVE LE MODE CANONIQUE ET L'ECHO DES INPUTS 
+    stty -icanon -echo
+    
+    #INITIALISATION DE LA VARIABLE QUI VA PRENDRE LE MOT DE PASSE
+    pass=
+
+    #####SAISIE DU MOT DE PASSE
+    while true
+    do  CHAR=$(head -c1)                  ###LECTURE D'UNE SEULE CARACTÈRE
+
+        case "$CHAR" in
+
+        "$BS")  if [ -n "$pass" ]
+        		then   ########LORS DE L'APPUIE SUR LA TOUCHE BACKSPACE, LES ACTIONS SUIVANT SONT FAITES
+                    pass=${pass%?}        ###ON SUPPRIME LE DERNIER CARACTÈRE PAR SUBSTITUE
+                    printf "\b \b"		  ###ON SUPPRIME LE DERNIER ÉTOILE DANS LA SORTIE STANDARD
+                fi 
+                ;;
+
+           "")  printf "\n"; break ;;     ###ON AFFICHE UN SAUT DE LIGNE LORS DE L'APPUIE SUR "RETURN" "ENTRER"
+
+            *)  printf '*'			      ###AFFICHAGE D'UNE ÉTOILE PAR SAISIE
+                pass="${pass}${CHAR}"  	  #AJOUT DE "CHAR" SUR "pass"
+               ;;
+        esac
+    done
+
+    stty "${_OLDSTTY}" >/dev/null 2>&1    ###RESTAURATION DU MODE NORMAL DU TERMINAL
+}
+
+
+
+
+			   ###############################################################################################################
+               ######################        VÉRIFICATION DES COORDONNÉES DE L'UTILISATEUR        ############################
+               ###############################################################################################################
+
+
+#Fonction qui lit l'email du joueur et le vérifie s'il est correct
+ADRESSE_EMAIL_()
+{
+
+	header
+	RETOUR_VERS_LE_MENU_PRINCIPAL_
+	retour=1
+
+	if [ "$1" = '_0char' ]
+	then
+		necho "\n \t\t\t ${null} ${rose}_Vous n'avez rien saisie_${null}\n "
+		sleep 1.5
+
+	elif [ "$1" = '_inc' ]
+	then
+		echo "\n \t\t\t  ${rose}_Adresse E-mail Incorrect_${null} "
+
+	elif [ "$1" = '_FALSE' ]
+	then
+		echo "\n\t\t${grasRose}${email}${null} n'est pas l'adresse E-mail de ${login}${null} "
+
+	fi
+
+	echo "\n ${soulign1}${gras}Nom d'utilisateur  :${null}${grasJaune}  $login ${null}"
+    necho "${gras}${blackBg} ${soulign1}Entrez votre Adresse E-mail :"
+    necho "${null}${grasRouge}${italic}  "
+	read email
+
+	echo "${null}"
+	nbchar=$(expr length "$email")
+
+	if [ "$nbchar" -eq 0 ]
+	then 
+		clear		
+		ADRESSE_EMAIL_ '_0char' #Appel de la fonction "ADRESSE_EMAIL_"
+	elif [ "$email" = "--mM" ]
+	then
+		sh QIUM.sh
+		exit 0
+
+	#Vérification si "$email" est un adresse email valide
+	#valide : s'Il y'a une chaine avant et après le '@'
+	#valide : s'il y'a le '.' après une chaine qui est après le '@'
+	#valide : s'il n'y a pas d'espaces dans l'email
+	elif ((echo "$email"|egrep ".+@"             ) >/dev/null 2>&1 )&&\
+		 ((echo "$email"|egrep "@.+\..+"         ) >/dev/null 2>&1 )&&\
+		 ((test "$(echo "$email"|wc -w )" -eq 1  ) >/dev/null 2>&1 )
+	then heure="$(date +%T)"
+		 _testEmail="$(egrep -w ^"$login" '.Datas/Joueurs'|cut -f3 -d:|cut -f3 -d'|')"
+
+		if [ "$email" != "$_testEmail" ]
+		then
+			clear
+			#ECRITURE DANS LE LOG
+			necho "\___${heure} : ${gras}EMAIL → Tentative N° ${i} :${null}" >>"${_SESSIONLOG}"
+			echo  "${rougeS}Adresse E-mail incorrect${null}" >>"${_SESSIONLOG}"
+			
+			i="$(expr $i + 1)"
+			ADRESSE_EMAIL_ '_FALSE'
+		
+		else 
+			echo "\n\t\t\t Adresse E-mail Correct ${vert}✔${null}"
+			
+			#ECRITURE DANS LE LOG
+			necho "\___${heure} : ${gras}EMAIL → Tentative N° ${i} :${null}" >>"${_SESSIONLOG}"
+			echo  "${vert}Adresse E-mail Correct ${vert}✔${null}" >>"${_SESSIONLOG}"
+
+			sleep 1
+		fi
+
+	else
+		clear
+
+		#ECRITURE DANS LE LOG
+		necho "\___${heure} : ${gras}EMAIL → Tentative N° ${i} :${null}" >>"${_SESSIONLOG}"
+		echo  "${rougeS}Adresse E-mail incorrect${null}" >>"${_SESSIONLOG}"
+
+		i="$(expr $i + 1)"
+		ADRESSE_EMAIL_ '_inc' #Appel de la fonction "ADRESSE_EMAIL_"
+	fi
+}
+
+
+
+
+
+#Fonction qui vérifie si l'anée est correct
+ANNEE_DE_NAISSANCE_()
+{
+
+	header
+
+	if [ "$1" = '_inc' ]
+	then
+		echo "\n \t\t\t  ${rose}_Année de Naissance Incorrect_${null} "
+	   necho "\n\t L'année de naissance est un nombre"
+		echo " ${grasBleu}compris entre 1900 et 2019${null} "
+
+	elif [ "$1" = '_0char' ]
+	then
+		necho "\n \t\t\t  ${null}${rose}_Vous n'avez rien saisie_${null}\n "
+		sleep 1.5
+	elif [ "$1" = '_FALSE' ]
+	then
+		echo "\n\t\t${grasRose}${annee}${null} n'est pas l'année de naissance de ${login}${null} "
+
+	fi
+
+	echo " ${soulign1}${gras}Nom d'utilisateur  :${null}${grasJaune}  $login ${null}"
+    echo " ${soulign1}${gras}Email${null}${gras}              :${grasJaune}  $email ${null}"
+	necho "${gras}${blackBg} ${soulign1}Entrez votre Année de naissance :${null}${grasRouge}${italic} "
+	read annee
+
+	nbchar=$(expr length "$annee")
+
+	heure="$(date +%T)"
+	if [ "$nbchar" -eq 0 ]
+	then 
+		clear
+		
+		ANNEE_DE_NAISSANCE_ '_0char'
+
+	#Vérification si "$annee est un nombre"
+	elif ((expr $annee + 0 )          >/dev/null 2>&1 )&&\
+		 (test "$annee" -ge 1900 -a "$annee" -le 2019 )
+	then
+		clear
+		header
+
+		_testYear="$(egrep -w ^"$login" '.Datas/Joueurs'|cut -f3 -d:|cut -f2 -d'|')"
+		
+		if [ "$annee" != "$_testYear" ]
+		then
+			clear
+
+			#ECRITURE DANS LE "LOG"
+			necho "\___${heure} : ${gras}ANNÉE → Tentative N° ${j} :${null}" >>"${_SESSIONLOG}"
+			echo  "${rougeS}Année incorrect${null}" >>"${_SESSIONLOG}"
+
+			j="$(expr $j + 1)"
+			ANNEE_DE_NAISSANCE_ '_FALSE'
+			return 0
+		
+		else 
+			echo "\n\t\t\t Année de naissance correct ${vert}✔${null}"
+
+			#ECRITURE DANS LE "LOG"
+			necho "\___${heure} : ${gras}ANNÉE → Tentative N° ${j} :${null}" >>"${_SESSIONLOG}"
+			echo  "${vert}Année correct ${vert}✔${null}" >>"${_SESSIONLOG}"
+			
+			j="$(expr $j + 1)"
+			sleep 1
+		fi
+
+			echo " ${soulign1}${gras}Nom d'utilisateur  :${null}${grasJaune}  $login ${null}"
+		    echo " ${soulign1}${gras}Email${null}${gras}              :${grasJaune}  $email ${null}"
+    		echo "${gras} ${soulign1}Année de naissance :${null}${grasJaune}  $annee ${null}"
+	
+	else
+		clear
+
+		#ECRITURE DANS LE "LOG"
+		necho "\___${heure} : ${gras}ANNÉE → Tentative N° ${j} :${null}" >>"${_SESSIONLOG}"
+		echo  "${rougeS}Année incorrect${null}" >>"${_SESSIONLOG}"
+
+		j="$(expr $j + 1)"
+		ANNEE_DE_NAISSANCE_ '_inc'
+	fi
+}
+
+
+
+			##########################################################################################################
+			############## CETTE FONCTION CONTIENT L'APPEL DES DES FONCTIONS DÉCLARÉES CI-HAUT  ######################
+			##########################################################################################################
+FORGOTTEN_PASSWORD_()
+{
+	clear
+	header
+	cat Tools/Politique\ de\ Confidentialité.smi
+
+	#SAUVEGARDE DE L'ÉTAT ACTUEL DU TERMINAL
+
+    stty -icanon -echo
+	CHAR=$(head -c1)
+	stty "${_OLDSTTY}" >/dev/null 2>&1
+
+	###### DÉBUT DE LA VERIFICATION DE L'IDENTITÉ
+	retour=0
+	i=1
+	j=1
+
+	clear
+	ADRESSE_EMAIL_
+
+	clear
+	ANNEE_DE_NAISSANCE_
+
+
+}
+
+
+
+
+			   ###############################################################################################################
+               ######################              CRÉATION DU NOUVEAU MOT DE PASSE               ############################
+               ###############################################################################################################
+
+
+
+##Test sur le nombre de caractères et si le mot de passe est égal au nom d'utilisateur
+VERIFY_HUMAN_PASSWORD_IF_ITs_LEGAL_()
+{
+	
+	if [ "$nbchar" -eq 0 ]
+	then 
+		clear
+		THEN_HUMAN_CREATE_A_NEW_PASSWORD_ '_0char'
+
+	elif [ "$_My_New_Password" = "--mM" ] #"mM" veut dire 'main Menu'
+	then
+		sh QIUM.sh
+		exit 0
+
+	elif [ "$nbchar" -lt 4 ]
+	then
+		clear
+		THEN_HUMAN_CREATE_A_NEW_PASSWORD_ '_short'
+
+	fi
+
+	if [ "$_My_New_Password" = "$login" ]
+	then
+		clear		
+		THEN_HUMAN_CREATE_A_NEW_PASSWORD_ '_diff'
+
+	fi
+}
+
+#fonction pour resaisir le mot de passe 
+CONFIRM_HUMAN_PASSWORD_()
+{
+	heure="$(date +%T)"
+	clear
+	header
+
+	if 	 [ -z "$1" ]
+	then
+		###ECRITURE DANS LE "LOG"
+	 	printf "  |\n  \__${heure} : ${bleu}CONFIRMATION DU NOUVEAU MOT DE PASSE${null}\n" >>"${_SESSIONLOG}"
+			     		  
+	elif [ "$1" = '_new' ]
+	then
+		necho "\n \t\t\t ${rougeS}_Mot de Passe Incorrect_${null}"
+		sleep 1
+		necho "\n \t  Des difficultés? tapez ${grasJaune}--new"
+		 echo "${null} pour créer un nouveau mot de passe"
+		sleep 0.5
+
+	elif [  "$1" = '_0char' ]
+	then
+		necho "\n \t\t\t  ${rose}_Vous n'avez rien saisie_${null}\n "
+		sleep 1.5
+	fi
+
+	echo " ${soulign1}${gras}Nom d'utilisateur  :${null}${grasJaune}  $login ${null}"
+    echo " ${soulign1}${gras}Email${null}${gras}              :${grasJaune}  $email ${null}"
+	echo "${gras} ${soulign1}Année de naissance :${null}${grasJaune}  $annee ${null}"
+	necho " ${null}${soulign1}${gras}Mot de Passe:${null}${grasJaune}  ********${null} "
+
+	necho "\n\n${gras}${blackBg} ${soulign1}Confirmer le Mot de Passe:${null}${grasJaune} "
+	
+	#SAISIE DU MOT DE PASSE
+	PASSWORD_READER_
+	_Confirm_My_New_Password="${pass}"
+
+	echo "${null}"
+
+	nbchar="$(expr length "$_Confirm_My_New_Password")"
+
+	if [ "$nbchar" -eq 0 ]
+	then
+		clear
+		CONFIRM_HUMAN_PASSWORD_ '_0char'
+
+	elif [ "$_Confirm_My_New_Password" = "--new"  ]
+	then
+		clear
+		retour=0
+
+		###ECRITURE DANS LE "LOG"
+		heure="$(date +%T)"
+		printf "  |\n  /__${heure} : ${rose}NOUVEAU MOT DE PASSE OUBLIÉ, CREATION D'UN NOUVEAU${null}\n" >>"${_SESSIONLOG}"
+		THEN_HUMAN_CREATE_A_NEW_PASSWORD_
+		
+	elif [ "$_Confirm_My_New_Password" != "$_My_New_Password" ]
+	then
+		clear
+		CONFIRM_HUMAN_PASSWORD_ '_new'
+
+	elif [ "$_Confirm_My_New_Password" = "$_My_New_Password"  ]
+	then
+		necho "\n \t\t\t Mot de passe Confirmé ${vert}✔${null}\n"
+		sleep 1.5
+
+		#Hachage du mot de passe saisie
+		_My_New_Password="$(Tools/cryptMe "$(echo "$_My_New_Password")"  |tr [:@^] [.1$])"
+
+		#Déscription du joueur
+		sexe="$(egrep -w ^"$login" '.Datas/Joueurs'|cut -f3 -d:|cut -f1 -d'|')"
+
+
+		######MIS-À-JOUR DES COORDONNÉES DE CONNEXION DE $login
+		#OLD_LINE="$(egrep -w ^"$login" '.Datas/Joueurs')"
+		NEW_LINE="${login}:${_My_New_Password}:${sexe}|${annee}|${email}"
+		#echo $NEW_LINE
+		#echo $OLD_LINE
+
+		###ÉFFACEMENT DU LIGNE CONTENANT LES COORDONÉES DE $login
+		sed -i "/^${login}/d" '.Datas/Joueurs'
+
+		###AJOUT D'UNE NOUVELLE LIGNE CONTENANT LES COORDONÉES DE $login
+		#sed -i "s/${OLD_LINE}/${NEW_LINE}/" '.Datas/Joueurs'
+		echo "${NEW_LINE}" >>'.Datas/Joueurs'
+		sort -o '.Datas/Joueurs' '.Datas/Joueurs' >/dev/null 2>&1
+	
+		heure="$(date +%T)"
+		###ECRITURE DANS LE "LOG"
+		printf "  /\n /\n_|__${heure} : ${jauneS}CHANGEMENT ENREGISTRÉE ${vert}✔${null}\n|" >>"${_SESSIONLOG}"
+
+
+		if [ "$sexe" = "H" ]
+		then genre="Mr."
+		else genre="Mme/Mlle.";fi
+
+		echo "\n\n\t\t\t ${gras}Ravi de vous revoir ${null}${italic}${grasBleu}$genre $login ${null} "
+		sleep 2
+		       jour="$(date +%A)"
+		      heure="$(date +%T)"
+		dateComplet="$(date +%x)"
+
+		###ECRITURE DANS LE "LOG"
+		necho "|\n|→ ${grasVert}${blackBg} Connecté le $jour" >>"${_SESSIONLOG}" 
+		necho " $dateComplet à $heure après le changement du mot " >>"${_SESSIONLOG}"
+		echo "de passe ${null}\n|" >>"${_SESSIONLOG}" 
+		    
+		     Tools/defilement.sh "$login"
+		Sources/interfaceMenu.sh "$login" "$genre"
+		exit 0
+	fi
+}
+
+
+THEN_HUMAN_CREATE_A_NEW_PASSWORD_()
+{
+	heure="$(date +%T)"
+	clear
+	
+	header
+	if   [ -z "$1" ]
+	then
+		###ECRITURE DANS LE "LOG"
+		printf " |\n \__${heure} : ${bleu}CREATION DU NOUVEAU MOT DE PASSE\n${null}" >>"${_SESSIONLOG}"
+
+	elif [  "$1" = '_0char' ]
+	then
+		necho "\n \t\t\t  ${rose}_Vous n'avez rien saisie_${null}\n "
+		sleep 1.5
+		
+	elif [ "$1" = '_short' ]
+	then
+		necho "\n \t\t\t  ${rose}_Mot de Passe trop courte_${null} \n"
+		sleep 1.5
+
+	elif [ "$1" = '_diff' ]
+	then
+		echo "\n\t     ${rougeS}_Le Mot de passe doit être différent du nom d'Utilisateur_${null}"
+		sleep 1.5
+	fi
+
+
+	echo " ${soulign1}${gras}Nom d'utilisateur  :${null}${grasJaune}  $login ${null}"
+    echo " ${soulign1}${gras}Email${null}${gras}              :${grasJaune}  $email ${null}"
+	echo "${gras} ${soulign1}Année de naissance :${null}${grasJaune}  $annee ${null}"
+
+	necho "\n${blackBg}${soulign1}${gras} Entrez le nouveau Mot de Passe :${null}${grasRouge}  "
+
+	#APPEL DE LA FONCTION QUI LIT LE MOT DE PASSE
+	PASSWORD_READER_ ;	_My_New_Password="${pass}"
+
+	#Nombre de carractères du mot de passe
+	nbchar="$(expr length "$_My_New_Password")"
+	
+	#VÉRIFICATION DU MOT DE PASSE SAISIE
+	VERIFY_HUMAN_PASSWORD_IF_ITs_LEGAL_
+
+	#CONFIRMATION DU MOT DE PASSE
+	CONFIRM_HUMAN_PASSWORD_
+}
+
+
+			   ###############################################################################################################
+               ######################            FIN DE LA DÉCLARATION DES FONCTIONS             #############################
+               ###############################################################################################################
+	
