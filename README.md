@@ -5,8 +5,8 @@ Quatre Indice et Un mot is a textual game that show for the player four words an
 Before you start the game, you must give the execution rights for the QIUM.sh script.
 
 Open a terminal and type
-> $ chmod +x QUIM.sh
-Then run game by typing<br/>
+> $ chmod +x QUIM.sh <br/>
+Then run game by typing <br/>
 > $ ./QUIM.sh
 
 # The program
