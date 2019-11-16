@@ -1,6 +1,12 @@
 # Quatre-indice-et-unMot
 Quatre Indice et Un mot is a textual game that show for the player four words and and the player must find the common word between the four word given( the lexical field).
 
+# Start the game
+Before you start the game, you must give the execution rights for the QIUM.sh script.
+
+#Open a terminal and type 
+> chmod +x QUIM.sh
+
 # The program
 - Fonctionne sur un environnement Linux
 - A set of scripts written in sh (sh, bourne shell) automated to make the program as fluid as possible.
