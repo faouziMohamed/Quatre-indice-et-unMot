@@ -1,5 +1,5 @@
 # Quatre-indice-et-unMot
-Quatre Indice et Un mot is a textual game that show for the player four words and and the player must find the common word between the four word given( the lexical field).
+**_Quatre Indice et Un mot_** is a textual game that show for the player four words and and the player must find the common word between the four word given( the lexical field).
 
 # Start the game
 Before you start the game, you must give the execution rights for the QIUM.sh script.
