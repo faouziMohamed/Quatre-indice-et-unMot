@@ -1,0 +1,20 @@
+langage: cpp
+dist: bionic
+
+os:
+ - linux
+
+branches:
+ only:
+  - master
+  
+env:
+ alias:
+  - CONFIG=release
+
+install:
+- sudo apt-get --yes install gcc
+
+script:
+- chmod +x QIUM.sh
+- ./QIUM.sh
