@@ -1,15 +1,20 @@
-# Quatre-indice-et-unMot
+# Quatre-indice-et-unMot  
+[![Build Status](https://travis-ci.org/faouziMohamed/Quatre-indice-et-unMot.svg?branch=master)](https://travis-ci.org/faouziMohamed/Quatre-indice-et-unMot)  
 **_Quatre Indice et Un mot_** is a textual game that show for the player four words and and the player must find the common word between the four word given( the lexical field).
 
 # Start the game
 Before you start the game, you must give the execution rights for the QIUM.sh script.
 
 Open a terminal and type
-> chmod +x QUIM.sh
+```bash
+chmod +x QUIM.sh
+```
 
 Then run game by typing 
 
-> ./QUIM.sh
+```bash
+./QUIM.sh
+```
 
 # The program
 - Fonctionne sur un environnement Linux
