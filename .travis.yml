@@ -14,6 +14,7 @@ env:
 
 install:
 - sudo apt-get --yes install gcc
+- sudo apt-get --yes install build-essential
 
 script:
 - chmod +x QIUM.sh
