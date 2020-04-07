@@ -18,4 +18,3 @@ install:
 
 script:
 - chmod +x QIUM.sh
-- ./QIUM.sh
