@@ -33,15 +33,3 @@ Then run game by typing
 #### While playing
   - The player can save the game in progress before leaving it.
   - The player can leave the game in progress without save it.
-  
-  
-# Project
-- _Open source project_.
-
-# University
-- _**University Ibn Tofail of Kenitra (Morocco)**_
-- Faculty of Sciences
-- Computer Science department
-- Mathematical Science and Computer Science 
-- Semester 3 (2018/2019)
-- Mohamed Faouzi Faouzoudine
