@@ -55,3 +55,41 @@
  |°° Le Jeu réprend
 |
 |→→ [1;32mAFFICHAGE DE L'INTERFACE MENU[0m
+ [4:1m   [0m
+|→→[1;47;30m Wednesday 08/05/2020 01:33:15 PM : LANCEMENT DU PROGRAMME [0m
+|→→[46m[1m[30m Wednesday 08/05/2020 01:33:15 PM : AFFICHAGE DU MENU PRINCIPAL [0m
+|
+| [1;47;30mCHOIX NUMÉRO 1 :[34m SE CONNECTER[0m
+|
+|[4:1m→→[0m [36mPROCESSUS DE CONNEXION LANCÉ[0m Le Wednesday 08/05/2020 à 13:34:01
+  |
+  \___ 13:34:04 :[1m LOGIN        [0m: [32mLogin correct [0m
+  |
+  |
+  \___ 13:34:06 : [1mMOT DE PASSE[0m[36m : [1mTentative N° 1 :[0m [32mMot de passe correct[0m
+[4:1m  [0m|
+|
+|→ [1;32m[40m Nouvelle connexion le Wednesday 08/05/2020 à 13:34:06 [0m
+|
+|
+|→→ [1;35mAFFICHAGE DE L'INTERFACE MENU[0m
+|
+|→ [1;35mdéconnectée à 01:34:25 PM[0m
+ [4:1m   [0m
+|→→[1;47;30m Wednesday 08/05/2020 01:34:25 PM : LANCEMENT DU PROGRAMME [0m
+|→→[46m[1m[30m Wednesday 08/05/2020 01:34:25 PM : AFFICHAGE DU MENU PRINCIPAL [0m
+|
+| [1;47;30mCHOIX NUMÉRO 1 :[34m SE CONNECTER[0m
+|
+|[4:1m→→[0m [36mPROCESSUS DE CONNEXION LANCÉ[0m Le Wednesday 08/05/2020 à 13:34:32
+  |
+  \___ 13:34:34 :[1m LOGIN        [0m: [32mLogin correct [0m
+  |
+  |
+  \___ 13:34:36 : [1mMOT DE PASSE[0m[36m : [1mTentative N° 1 :[0m [32mMot de passe correct[0m
+[4:1m  [0m|
+|
+|→ [1;32m[40m Nouvelle connexion le Wednesday 08/05/2020 à 13:34:36 [0m
+|
+|
+|→→ [1;35mAFFICHAGE DE L'INTERFACE MENU[0m

@@ -1,72 +1,72 @@
 ENTETE_()
 {
-	esp="                            "
-	esp1="                            "
-	line="$esp$esp1                        "
-	clear
-	necho "${blackBg}$line${gras}\n${esp}QUATRE "
-	necho "${grasRose}INDICES "
-	necho "ET "
-	necho "${null}${blackBg}${gras}UN "
-	necho "MOT${esp1}"
+    esp="                            "
+    esp1="                            "
+    line="$esp$esp1                        "
+    clear
+    necho "${blackBg}$line${gras}\n${esp}QUATRE "
+    necho "${grasRose}INDICES "
+    necho "ET "
+    necho "${null}${blackBg}${gras}UN "
+    necho "MOT${esp1}"
 
-	ligne="________________________________________________________________________________"
-	necho ""
-	necho "${vert}${soulign2}${blackBg}${bleuPal}\n${ligne}"
+    ligne="________________________________________________________________________________"
+    necho ""
+    necho "${vert}${soulign2}${blackBg}${bleuPal}\n${ligne}"
 
-	necho "${null}"
+    necho "${null}"
 }
 
 
 RECUPERATION_DES_DONNEES_DU_JOUEURS_()
 {
-	#La date et heure courante
-	 jour="$(date +%A)"
-	 date="$(date +%x)"
-	heure="$(date +%X)"
-	Temps="$(echo "${jour} ${date} ${heure}")"
-	
-	#######On Récupère la ligne contenant les données du joueur
-	ligne="$(egrep -w ^${login} ${_SAVE})" 
-	
-	#######On récupère les champs de la ligne
-	    score="$(printf "${ligne}"|cut -d: -f2)"
-	   niveau="$(printf "${ligne}"|cut -d: -f3)"
-	numTirage="$(printf "${ligne}"|cut -d: -f4)"
+    #La date et heure courante
+     jour="$(date +%A)"
+     date="$(date +%x)"
+    heure="$(date +%X)"
+    Temps="$(echo "${jour} ${date} ${heure}")"
+    
+    #######On Récupère la ligne contenant les données du joueur
+    ligne="$(egrep -w ^${login} ${_SAVE})" 
+    
+    #######On récupère les champs de la ligne
+        score="$(printf "${ligne}"|cut -d: -f2)"
+       niveau="$(printf "${ligne}"|cut -d: -f3)"
+    numTirage="$(printf "${ligne}"|cut -d: -f4)"
 
-	#######On récupère le nombre total des tirages du niveau courant
-	       x="${niveau}"
-	nbTotTir="$(tail +2 ${_LEVEL}${x} |cut -d: -f2|wc -l)"
+    #######On récupère le nombre total des tirages du niveau courant
+           x="${niveau}"
+    nbTotTir="$(tail +2 ${_LEVEL}${x} |cut -d: -f2|wc -l)"
 
-	#######On récupère le nombre de points à gagner et à perdre du niveau courant
-	 perd="$(head -1 ${_LEVEL}${x} |cut -d: -f2)"
-	gagne="$(head -1 ${_LEVEL}${x} |cut -d: -f1)"
+    #######On récupère le nombre de points à gagner et à perdre du niveau courant
+     perd="$(head -1 ${_LEVEL}${x} |cut -d: -f2)"
+    gagne="$(head -1 ${_LEVEL}${x} |cut -d: -f1)"
 
 } 
 
 SELECTION_DU_TIRAGE_ALEATOIREMENT__ET__RECUPERATION_DES_INDICES_()
 {
-	#La date et heure courante
-	 jour="$(date +%A)"
-	 date="$(date +%x)"
-	heure="$(date +%X)"
-	Temps="$(echo "${jour} ${date} ${heure}")"
-	
-	#####séléction d'un identifiant de tirage aléatoirement (premier champ dans le fichier de tirages)
-	id_Tirage=$(tail +2 ${_LEVEL}${x} | sort -R|cut -d: -f1|tail -1)
+    #La date et heure courante
+     jour="$(date +%A)"
+     date="$(date +%x)"
+    heure="$(date +%X)"
+    Temps="$(echo "${jour} ${date} ${heure}")"
+    
+    #####séléction d'un identifiant de tirage aléatoirement (premier champ dans le fichier de tirages)
+    id_Tirage=$(tail +2 ${_LEVEL}${x} | sort -R|cut -d: -f1|tail -1)
 
-	#####RECHERCHE DE L'ID TROUVÉ DANS L'HISTORIQUE DES TIRAGES DE ${login}
-	inStory="$(grep "$id_Tirage" "${_TEMP_TIRAGE}")"
-	#Si le tirage a été déjà faites on cherche un qui n'est pas encore joué
-	if [ "$inStory" = "$id_Tirage" ];then	SELECTION_DU_TIRAGE_ALEATOIREMENT__ET__RECUPERATION_DES_INDICES_; fi
+    #####RECHERCHE DE L'ID TROUVÉ DANS L'HISTORIQUE DES TIRAGES DE ${login}
+    inStory="$(grep "$id_Tirage" "${_TEMP_TIRAGE}")"
+    #Si le tirage a été déjà faites on cherche un qui n'est pas encore joué
+    if [ "$inStory" = "$id_Tirage" ];then	SELECTION_DU_TIRAGE_ALEATOIREMENT__ET__RECUPERATION_DES_INDICES_; fi
 
-	#####On récupère les indices et On les transformes tous en MAJUSCUL
-	   indice1="$(grep $id_Tirage ${_LEVEL}${x}|cut -f3 -d:|tr a-zéèàùâç A-ZÉÈÀÙÂÇ)"
-	   indice2="$(grep $id_Tirage ${_LEVEL}${x}|cut -f4 -d:|tr a-zéèàùâç A-ZÉÈÀÙÂÇ)"
-	   indice3="$(grep $id_Tirage ${_LEVEL}${x}|cut -f5 -d:|tr a-zéèàùâç A-ZÉÈÀÙÂÇ)"
-	   indice4="$(grep $id_Tirage ${_LEVEL}${x}|cut -f6 -d:|tr a-zéèàùâç A-ZÉÈÀÙÂÇ)"
+    #####On récupère les indices et On les transformes tous en MAJUSCUL
+       indice1="$(grep $id_Tirage ${_LEVEL}${x}|cut -f3 -d:|tr a-zéèàùâç A-ZÉÈÀÙÂÇ)"
+       indice2="$(grep $id_Tirage ${_LEVEL}${x}|cut -f4 -d:|tr a-zéèàùâç A-ZÉÈÀÙÂÇ)"
+       indice3="$(grep $id_Tirage ${_LEVEL}${x}|cut -f5 -d:|tr a-zéèàùâç A-ZÉÈÀÙÂÇ)"
+       indice4="$(grep $id_Tirage ${_LEVEL}${x}|cut -f6 -d:|tr a-zéèàùâç A-ZÉÈÀÙÂÇ)"
 
-	  	#####Pour la réponse on transformes tous les MAJUSCUL en miniscule 
+          #####Pour la réponse on transformes tous les MAJUSCUL en miniscule 
     LA_REPONSE="$(grep $id_Tirage ${_LEVEL}${x}|cut -f2 -d:|tr  A-ZÉÈÀÙÂÇ a-zéèàùâç)"
 
 }  2>"/dev/null"
@@ -74,192 +74,184 @@ SELECTION_DU_TIRAGE_ALEATOIREMENT__ET__RECUPERATION_DES_INDICES_()
 
 DERNIERE_LIGNE_()
 {
-	taille=$(expr length $(date +%A ))
+    taille=$(expr length $(date +%A ))
 
-	if [ "${taille}" -eq 8 ]
-	then
-		necho "${bleuPal}________________"
-		necho "__________${null}$(date +"%A %x %T")${bleuPal}__________________________${null}\n"
+    if [ "${taille}" -eq 8 ]
+    then
+        necho "${bleuPal}________________"
+        necho "__________${null}$(date +"%A %x %T")${bleuPal}__________________________${null}\n"
 
-	elif [ "${taille}" -eq 5 ]
-	then
-			necho "${bleuPal}____________________________________"
-		necho "__________${null}$(date +"%A %x %T")${bleuPal}_________${null}\n"
+    elif [ "${taille}" -eq 5 ]
+    then
+            necho "${bleuPal}____________________________________"
+        necho "__________${null}$(date +"%A %x %T")${bleuPal}_________${null}\n"
 
-	else 
-		necho "${bleuPal}____________________________________"
-		necho "__________${null}$(date +"%A %x %T")${bleuPal}________${null}\n"
+    else 
+        necho "${bleuPal}____________________________________"
+        necho "__________${null}$(date +"%A %x %T")${bleuPal}________${null}\n"
 
-	fi
+    fi
 }
 
-INTERFACE_GRAPHIQUE_()
+print_user_interface()
 {
-	header
-	taille=$(expr length $login)
+    header
+    taille=$(expr length $login)
 
-	if [ "$taille" -le 8 ]
-	then player="         $login" 
-	else player="   $login" 
-	fi
-	
-	dateComplet="$(date |cut -f1 -d,)"
-		
+    if [ "$taille" -le 8 ]
+    then player="         $login" 
+    else player="   $login" 
+    fi
+    
+    dateComplet="$(date |cut -f1 -d,)"
+        
 
-		#####################################     INTERFACE GRAPHIQUE       ##################################
-		necho "${grasJaune}${null}"
-	   necho "${gras}${soulign2}....................................${null}${bleuPal} Niveau $x "
-		echo "${null}${gras}${soulign2}..................................${null}\n"
-		echo "${grasJaune}"
-	   necho "\t    $indice1"
-	   necho "     \t$indice2"
-	   necho "     \t$indice3"
-		echo "       \t$indice4${null}"
-		echo "\n"
-		echo "                                                  Nombre de points total : ${score}"
-	   necho "${gras}${soulign2}..................................${null}${vert} Tirage N° ${numTirage} "
-		echo "${null}${gras}${soulign2}................................${null}"
+        #####################################     INTERFACE GRAPHIQUE       ##################################
+        necho "${grasJaune}${null}"
+       necho "${gras}${soulign2}....................................${null}${bleuPal} Niveau $x "
+        echo "${null}${gras}${soulign2}..................................${null}\n"
+        echo "${grasJaune}"
+       necho "\t    $indice1"
+       necho "     \t$indice2"
+       necho "     \t$indice3"
+        echo "       \t$indice4${null}"
+        echo "\n"
+        echo "                                                  Nombre de points total : ${score}"
+       necho "${gras}${soulign2}..................................${null}${vert} Tirage N° ${numTirage} "
+        echo "${null}${gras}${soulign2}................................${null}"
 
-		#echo "${bleuPal}${soulign2}________________________________________________________________________________${null}"
-		DERNIERE_LIGNE_
-	   	echo "\n"
-		echo "\t * ${grisG}${italic}Pour sauvegarder et quitter la partie tapez sur la touche   ${null}${gras}${soulign1}S${grisG}${null} *"
-		echo "\t * ${grisG}${italic}Pour quitter sans sauvegarder la partie tapez sur la touche ${null}${gras}${soulign1}Q${grisG}${null} *"
-		echo "\t *---------------------------------------------------------------*"
-		echo ""
+        #echo "${bleuPal}${soulign2}________________________________________________________________________________${null}"
+        DERNIERE_LIGNE_
+           echo "\n"
+        echo "\t * ${grisG}${italic}Pour sauvegarder et quitter la partie tapez sur la touche   ${null}${gras}${soulign1}S${grisG}${null} *"
+        echo "\t * ${grisG}${italic}Pour quitter sans sauvegarder la partie tapez sur la touche ${null}${gras}${soulign1}Q${grisG}${null} *"
+        echo "\t *---------------------------------------------------------------*"
+        echo ""
 }  2>"/dev/null"
 
 VERIFICATION_DU_MOT_SAISIE_()
 {
-	#Lheure courante
-	heure="$(date +%X)"
-	
-	if [ "$nbchar" -eq 0 ];
-	then
-		necho " \t\t\t  ${rose}_Vous n'avez rien saisie_${null} "
-		sleep 1.5
-	else	
-		#on transforme tous les majuscule en minuscule du mot saisie
-		motLu="$(echo "$motLu"|tr A-ZÉÈÀÙÔç a-zéèàùôÇ)"
+    #Lheure courante
+    heure="$(date +%X)"
+    
+    if [ "$nbchar" -eq 0 ];
+    then
+        necho " \t\t\t  ${rose}_Vous n'avez rien saisie_${null} "
+        sleep 1.5
+    else	
+        #on transforme tous les majuscule en minuscule du mot saisie
+        motLu="$(echo "$motLu"|tr A-ZÉÈÀÙÔç a-zéèàùôÇ)"
 
-		case "$motLu" in
+        case "$motLu" in
 
-			   ###################On sauvegarde les données avant de quitter######################
-			s) sleep 0.4
-			   #On récupère les données actuelle du joueur
-				_NEW_LINE="$(egrep -w ^${login} ${_TEMP_SAVE})"
-				_OLD_LINE="$(egrep -w ^${login} ${_SAVE})"
+               ########On sauvegarde les données avant de quitter##
+            s) sleep 0.4
+               #On récupère les données actuelle du joueur
+                _NEW_LINE="$(egrep -w ^${login} ${_TEMP_SAVE})"
+                _OLD_LINE="$(egrep -w ^${login} ${_SAVE})"
 
-				#Sauvegarde des données %% REMPLACEMENT DES ANCIENS DONNÉES PAR LES NOUVELLES DONNÉES %% 
-				sed -i "s/${_OLD_LINE}/${_NEW_LINE}/" "${_SAVE}" 2>/dev/null
+                #Update user(Player) data
+                sed -i "s/${_OLD_LINE}/${_NEW_LINE}/" "${_SAVE}" 2>/dev/null
 
-			   cat  "${_TEMP_TIRAGE}" > "${_TIRAGES}"
-			   rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}" 2>'/dev/null'
+               cat  "${_TEMP_TIRAGE}" > "${_TIRAGES}"
+               rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}" 2>'/dev/null'
 
-			   echo " \t\t\t   Sauvegarde réussi ( ^_^ )";sleep 1.2
+               echo " \t\t\t   Sauvegarde réussi ( ^_^ )";sleep 1.2
 
-			   ####Ajout dans le log
-			   echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${rougeS}NON RESOLUE ${null}">>"${_SESSIONLOG}"
-			   echo " /\n/\n|→→ ${grasVert}Partie sauvegardée${null}">>"${_SESSIONLOG}"
+               ####Ajout dans le log
+               echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${rougeS}NON RESOLUE ${null}">>"${_SESSIONLOG}"
+               echo " /\n/\n|→→ ${grasVert}Partie sauvegardée${null}">>"${_SESSIONLOG}"
 
-			   exit 0
-		 	  # Sources/interfaceMenu.sh "$login" "$sexe";exit 0
-		 	   ;;
+               exit 0
+               # Sources/interfaceMenu.sh "$login" "$sexe";exit 0
+                ;;
 
-		 	   #################ON QUITTE SANS SAUVEGARDER LES DONNÉES##############################s
-		 	q) sleep 0.4
-			   rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}" 2>'/dev/null'
-			   echo " \t\t\t   Partie Non sauvegardée (o_o) "; sleep 1.2
+                ######ON QUITTE SANS SAUVEGARDER LES DONNÉES######s
+            q) sleep 0.4
+               rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}" 2>'/dev/null'
+               echo " \t\t\t   Partie Non sauvegardée (o_o) "; sleep 1.2
 
-			   #####Ajout dans le log
-			   echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${rougeS}NON RESOLUE ${null}">>"${_SESSIONLOG}"
-			   echo " /\n/\n|→→ ${grasRouge}Partie non sauvegardée${null}">>"${_SESSIONLOG}"
-			   exit 0
-			  # Sources/interfaceMenu.sh "$login" "$sexe";exit 0
-		 	   ;;
+               #####Ajout dans le log
+               echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${rougeS}NON RESOLUE ${null}">>"${_SESSIONLOG}"
+               echo " /\n/\n|→→ ${grasRouge}Partie non sauvegardée${null}">>"${_SESSIONLOG}"
+               exit 0
+              # Sources/interfaceMenu.sh "$login" "$sexe";exit 0
+                ;;
 
-		 	   ################ RÉPONSE CORRECT ####################### 
-"$LA_REPONSE")
-			#Ajout du réussite dans le log du joueur
-			echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${vert}RESOLUE ${null}\n |">>"${_SESSIONLOG}"
-			
-			#Incrémentation du score et du numéro de tirage
-			numTirage="$(expr $numTirage + 1 )"
-			score=$(expr $score + $gagne)
+                ################ RÉPONSE CORRECT ####################### 
+            "$LA_REPONSE")
+            #Ajout du réussite dans le log du joueur
+            echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${vert}RESOLUE ${null}\n |">>"${_SESSIONLOG}"
+            
+            #Incrémentation du score et du numéro de tirage
+            numTirage="$(expr $numTirage + 1 )"
+            score=$(expr $score + $gagne)
 
-			#Enregistrement de l'id du tirage sur l'historique temporaire de $login
-			 echo "$id_Tirage" >> "${_TEMP_TIRAGE}"
+            #Enregistrement de l'id du tirage sur l'historique temporaire de $login
+             echo "$id_Tirage" >> "${_TEMP_TIRAGE}"
+            necho "\t\t  ${grasJaune}Félicitation vous avez deviné le mot : "
 
-			necho "\t\t  ${grasJaune}Félicitation vous avez deviné le mot : "
-
-			########AFFICHAGE DE LA RÉPONSE EN UTILISANT LA COMANDE SED POUR METTRE LE PREMIER CARACTÈRE EN MAUSCUL######
-			#Sans les sous-chaîne, avec le caractère '&'
-			##echo  $tirer|sed "s/./\u&/"
-
-			#Avec les sous-chaînes et le backreference correspondant, ici '\1'
-			necho "$tirer"|sed "s/\(.\)/\u\1/"
-			 echo " ($gagne points)${null}";;
+            #Avec les sous-chaînes et le backreference correspondant, ici '\1'
+            ##echo  $tirer|sed "s/./\u&/"
+            necho "$tirer"|sed "s/\(.\)/\u\1/"
+             echo " ($gagne points)${null}";;
 
 
-			   ####################### RÉPONSE INCORRECT #############################
-			*) score=$(expr $score - $perd )
-			   necho "\t\t\t   ${rougeS} Mot incorrect : "
-			    echo "  (-$perd points)${null}"
-			    echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${rose}RÉPONSE INCORRECT ${null}">>"${_SESSIONLOG}"
+               ####################### RÉPONSE INCORRECT #############################
+            *) score=$(expr $score - $perd )
+               necho "\t\t\t   ${rougeS} Mot incorrect : "
+                echo "  (-$perd points)${null}"
+                echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${rose}RÉPONSE INCORRECT ${null}">>"${_SESSIONLOG}"
 
-			   config=$(stty -g); stty raw
-			   necho "\n \t\t\t${grasRouge} Appuyez sur une touche pour continuer...${null}"
-			   touche=$(head -c1);stty $config;
-		esac
-	fi
+               config=$(stty -g); stty raw
+               necho "\n \t\t\t${grasRouge} Appuyez sur une touche pour continuer...${null}"
+               touche=$(head -c1);stty $config;
+        esac
+    fi
 }  2>"/dev/null"
 
-
-##											Fonction fait passer le joueur au niveau suivant s'il termine le niveau courant
 VERIFICATION_ET_PASSAGE_DU_NIVEAU_SUIVANT_SI_NIVEAU_TERMINE_()
 {
-	##Si on termine tous les tirages d'un niveau on passe au niveau suivant
-	
-	  echo " \e[11d\t\t${bleuPal} Bravo ! ^_^ ! Vous avez terminé le niveau $x${null}"
-	
-	config="$(stty -g)" ; stty raw; 
-	necho "\n\t\t${jauneS}   Appuyez sur une touche pour continuer...${null}"
-	touche="$(head -c1)";stty "$config"
+    ##Si on termine tous les tirages d'un niveau on passe au niveau suivant
+    echo " \e[11d\t\t${bleuPal} Bravo ! ^_^ ! Vous avez terminé le niveau $x${null}"
+    
+    config="$(stty -g)" ; stty raw; 
+    necho "\n\t\t${jauneS}   Appuyez sur une touche pour continuer...${null}"
+    touche="$(head -c1)";stty "$config"
 
     x="$(expr $x + 1 )" #On passe au niveau suivant
     #On vérifie si les fichiers du niveau suivant existent, s'ils n'existent pas on retourne dans le menu joueur
     if [ -e "${_LEVEL}${x}" ]
     then
+         perd="$(head -1 ${_LEVEL}${x}|cut -d: -f2 )" #On récupère le Nombre Nombre de points à perdre pour le niveau $x
+        gagne="$(head -1 ${_LEVEL}${x}|cut -d: -f1 )" #On récupère le Nombre Nombre de points à gagner pour le niveau $x
+     nbTotTir="$(tail +2 ${_LEVEL}${x}|wc -l       )" #On récupère le Nombre total des tirages du niveau $x
+    numTirage="1"                                    #On initialise le numéro de tirage à 1
 
-	     perd="$(head -1 ${_LEVEL}${x}|cut -d: -f2 )" #On récupère le Nombre Nombre de points à perdre pour le niveau $x
-	    gagne="$(head -1 ${_LEVEL}${x}|cut -d: -f1 )" #On récupère le Nombre Nombre de points à gagner pour le niveau $x
-	 nbTotTir="$(tail +2 ${_LEVEL}${x}|wc -l       )" #On récupère le Nombre total des tirages du niveau $x
-	numTirage="1"                                    #On initialise le numéro de tirage à 1
+    else
+        case "$sexe" in
+            H)genre="M.";;
+            F)genre="Mme/Mlle."
+        esac
+        clear
+        echo " \e[10d${gras}           De ${vert}nouveaux niveaux${null}${gras} Arrivent prochainement avec des surprises!!!"
+        echo " \t${null}${gras}   Félicitation${jauneS} ${genre} $login${null}${gras}, Vous avez terminé tous les niveaux${null}"
+        config="$(stty -g)" ; stty raw; 
+        necho "\n\t\t${jauneS}   Appuyez sur une touche pour continuer...${null}"
+        touche="$(head -c1)";stty "$config"
 
-	else
-		case "$sexe" in
-			H)genre="M.";;
-			F)genre="Mme/Mlle."
-		esac
-		clear
-		echo " \e[10d${gras}           De ${vert}nouveaux niveaux${null}${gras} Arrivent prochainement avec des surprises!!!"
-		echo " \t${null}${gras}   Félicitation${jauneS} ${genre} $login${null}${gras}, Vous avez terminé tous les niveaux${null}"
-		config="$(stty -g)" ; stty raw; 
-		necho "\n\t\t${jauneS}   Appuyez sur une touche pour continuer...${null}"
-		touche="$(head -c1)";stty "$config"
+        #On crée un des nouveaux fichiers temporaires pour l'historique et les points, Score et Niveau de $login 
+        #On récupère les données actuelle du joueur
+        _NEW_LINE="$(egrep -w ^${login} ${_TEMP_SAVE})" >/dev/null 2>&1
+        _OLD_LINE="$(egrep -w ^${login} ${_SAVE})"      >/dev/null 2>&1
 
-		#On crée un des nouveaux fichiers temporaires pour l'historique et les points, Score et Niveau de $login 
-		#On récupère les données actuelle du joueur
-		_NEW_LINE="$(egrep -w ^${login} ${_TEMP_SAVE})" >/dev/null 2>&1
-		_OLD_LINE="$(egrep -w ^${login} ${_SAVE})"      >/dev/null 2>&1
-
-		#Sauvegarde des données %% REMPLACEMENT DES ANCIENS DONNÉES PAR LES NOUVELLES %% 
-		sed -i "s/${_OLD_LINE}/${_NEW_LINE}/" "${_SAVE}"           2>/dev/null
-		cat "${_TIRAGES}" >"${_TEMP_TIRAGE}"         			   2>/dev/null 
-		rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}"        		       2>'/dev/null'
+        #Sauvegarde des données %% REMPLACEMENT DES ANCIENS DONNÉES PAR LES NOUVELLES %% 
+        sed -i "s/${_OLD_LINE}/${_NEW_LINE}/" "${_SAVE}"           2>/dev/null
+        cat "${_TIRAGES}" >"${_TEMP_TIRAGE}"         			   2>/dev/null 
+        rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}"        		       2>'/dev/null'
 
 
-	fi
+    fi
 
 } 2>"/dev/null"
 
@@ -272,7 +264,7 @@ A_BIENTO_()
   necho "${_10ligne}${null}${whiteBgGrasNoir}\t\t\t\t Merci et à Bientôt ${null}${_10ligne}"
   necho "${gras}${soulign2}---------------------------"
   necho "-----------------------------------------------------${null}"
-						  sleep 1
+                          sleep 1
  chmod -rwx "${_PLAYER}" "${_SAVE}" "Niveaux/*"  >'/dev/null' 2>&1
 }
 
@@ -280,56 +272,56 @@ A_BIENTO_()
 ####DETÉCTION DU CTRL+C
 detournerSIGINT()
 {
-	_10ligne="\n\n\n\n\n\n\n\n\n\n\n"
-	_4ligne="\n\n\n\n"
+    _10ligne="\n\n\n\n\n\n\n\n\n\n\n"
+    _4ligne="\n\n\n\n"
 
-	   necho "${_10ligne}${null} ${gras}    Voulez-vous ${grasJaune}Sauvegarder la partie avant de quitter le jeu${null}"
-	trap "clear;echo '${_10ligne}${vert}\t\t\t    _Vous devrez répondre_${null}'
-	sleep 1 ;clear; detournerSIGINT; exit 0" 2
-	   necho "  [${grasRouge}O${null}/${grasBleu}N${null}]? :  "
-	read choix
+       necho "${_10ligne}${null} ${gras}    Voulez-vous ${grasJaune}Sauvegarder la partie avant de quitter le jeu${null}"
+    trap "clear;echo '${_10ligne}${vert}\t\t\t    _Vous devrez répondre_${null}'
+    sleep 1 ;clear; detournerSIGINT; exit 0" 2
+       necho "  [${grasRouge}O${null}/${grasBleu}N${null}]? :  "
+    read choix
 
-	case "$choix" in
-	         o|O|Oui|OUI|oui) clear
-							 for i in `seq 1 5`; do necho ".";sleep 0.04;done;echo
+    case "$choix" in
+             o|O|Oui|OUI|oui) clear
+                             for i in `seq 1 5`; do necho ".";sleep 0.04;done;echo
 
-							#On crée un des nouveaux fichiers temporaires pour l'historique et les points, Score et Niveau de $login 
-							#On récupère les données actuelle du joueur
-							_NEW_LINE="$(egrep -w ^${login} ${_TEMP_SAVE})" >/dev/null 2>&1
-							_OLD_LINE="$(egrep -w ^${login} ${_SAVE})"      >/dev/null 2>&1
+                            #On crée un des nouveaux fichiers temporaires pour l'historique et les points, Score et Niveau de $login 
+                            #On récupère les données actuelle du joueur
+                            _NEW_LINE="$(egrep -w ^${login} ${_TEMP_SAVE})" >/dev/null 2>&1
+                            _OLD_LINE="$(egrep -w ^${login} ${_SAVE})"      >/dev/null 2>&1
 
-							#Sauvegarde des données %% REMPLACEMENT DES ANCIENS DONNÉES PAR LES NOUVELLES %% 
-							sed -i "s/${_OLD_LINE}/${_NEW_LINE}/" "${_SAVE}" 2>/dev/null
+                            #Sauvegarde des données %% REMPLACEMENT DES ANCIENS DONNÉES PAR LES NOUVELLES %% 
+                            sed -i "s/${_OLD_LINE}/${_NEW_LINE}/" "${_SAVE}" 2>/dev/null
 
-							   cat "${_TIRAGES}" >"${_TEMP_TIRAGE}"          2>/dev/null 
-							  echo "${_10ligne}${vert}\t\t\t   Sauvegarde réussi ( ^_^ )${null}";	sleep 1.2; 
-							echo " / \n |→→ ${grasVert}Données sauvegardées ( ^_^ )${null}\n |°° On ferme le jeu">>"${_SESSIONLOG}"
-							rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}" 2>'/dev/null'
-							chmod -rwx "${_PLAYER}" "Niveaux/" >'/dev/null' 2>&1
-							A_BIENTO_
-							exit 0
-							  ;;
-	n|N|No|no|Non|NO|NON) clear
-								rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}" 2>'/dev/null'
-							    echo "${_10ligne}${rougeS}\t\t\t   Partie Non sauvegardée (o_o) "; sleep 1.2
+                               cat "${_TIRAGES}" >"${_TEMP_TIRAGE}"          2>/dev/null 
+                              echo "${_10ligne}${vert}\t\t\t   Sauvegarde réussi ( ^_^ )${null}";	sleep 1.2; 
+                            echo " / \n |→→ ${grasVert}Données sauvegardées ( ^_^ )${null}\n |°° On ferme le jeu">>"${_SESSIONLOG}"
+                            rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}" 2>'/dev/null'
+                            chmod -rwx "${_PLAYER}" "Niveaux/" >'/dev/null' 2>&1
+                            A_BIENTO_
+                            exit 0
+                              ;;
+    n|N|No|no|Non|NO|NON) clear
+                                rm   "${_TEMP_TIRAGE}" "${_TEMP_SAVE}" 2>'/dev/null'
+                                echo "${_10ligne}${rougeS}\t\t\t   Partie Non sauvegardée (o_o) "; sleep 1.2
 
-							    #####Ajout dans le log
-							    echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${rougeS}NON RESOLUE ${null}">>"${_SESSIONLOG}"
-							    echo " /\n/\n|→→ ${grasRouge}Partie non sauvegardée${null}">>"${_SESSIONLOG}"
+                                #####Ajout dans le log
+                                echo " \\__ ${heure} : ${bleuPal}Tirage N°:${numTirage}  : ${rougeS}NON RESOLUE ${null}">>"${_SESSIONLOG}"
+                                echo " /\n/\n|→→ ${grasRouge}Partie non sauvegardée${null}">>"${_SESSIONLOG}"
 
 
-							   A_BIENTO_
-							   exit 0
-								;;
-		                   *) echo "\t\t S'il vous plait veuillez répondre par ${grasRouge}oui ${null} ou${grasBleu} non${null}"
-							  sleep 2.1
-							  clear
-							  detournerSIGINT ; exit 0
-							;;
-	esac
+                               A_BIENTO_
+                               exit 0
+                                ;;
+                           *) echo "\t\t S'il vous plait veuillez répondre par ${grasRouge}oui ${null} ou${grasBleu} non${null}"
+                              sleep 2.1
+                              clear
+                              detournerSIGINT ; exit 0
+                            ;;
+    esac
 
-	trap 2
+    trap 2
 }
 
 
-	
+    
