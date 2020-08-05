@@ -1,8 +1,4 @@
-                       #######################################################################################################
-                       ##########   FONCTION QUI SERA LANCÉ LORS DU DÉTÉCTION DU SIGNAL 'SIGINT' = "ctrl-c"    ###############
-                       ##########    					DANS LE FICHIER QIUM.sh                                ###############
-                       #######################################################################################################
-detour()
+trap_SIGINT()
 {	
 	_10ligne="\n\n\n\n\n\n\n\n\n\n"
 	   necho "${_10ligne}${null} ${gras}    Vous avez décidé de ${grasJaune}quitter le jeu${null},"
@@ -10,35 +6,27 @@ detour()
 	read choix
 
 	case "$choix" in
-	         o|O|Oui|OUI|oui) clear
- 							  header
-							  echo "${_10ligne}${null}${whiteBgGrasNoir}\t\t\t\t Merci et à Bientôt ${_10ligne}${null}"
-							  sleep 1
-							  chmod -rwx "${_PLAYER}" "${_SAVE}" "Niveaux/*"  >'/dev/null' 2>&1
-							  exit 0
-							  ;;
-		n|N|No|no|Non|NO|NON) clear
-								main 0
-								exit 0
-								;;
-		                   *) echo "\t\t S'il vous plait veuillez répondre par ${grasRouge}oui ${null} ou${grasBleu} non${null}"
-							  sleep 2.1
-							  clear
-							  detour
-							  exit 0
-							;;
+	    o|O|Oui|OUI|oui) 
+			clear
+			print_header
+			necho "${_10ligne}${null}${whiteBgGrasNoir}\t\t\t\t Merci"
+			echo  " et à Bientôt ${_10ligne}${null}"
+			sleep 1
+			chmod -rwx "${_PLAYER}" "${_SAVE}" "Niveaux/*"  >'/dev/null' 2>&1
+			exit 0 ;;
+		n|N|No|no|Non|NO|NON) 
+			clear
+			main 0
+			exit 0;;
+		*) echo "\t\t S'il vous plait veuillez répondre par ${grasRouge}oui ${null} ou${grasBleu} non${null}"
+			sleep 2.1
+			clear
+			trap_SIGINT
+			exit 0 ;;
 	esac
 }
-                        
 
-
-
-                        ################################################################################################## 
-                        ##########################          ENTÊTE DU FENÊTRE ACTUELLE          ##########################
-                        ##################################################################################################
-
-
-header()
+print_header()
 {
 	esp="                            "
 	esp1="                            "
@@ -53,16 +41,14 @@ header()
 	necho "$line"
 }
 
-
-
-                    #####################################################################################################################
-                    ############################################FONCTION DU MENU PRINCIPAL###############################################
-                    #####################################################################################################################
+                   #################################
+                   ####FONCTION DU MENU PRINCIPAL###
+                   #################################
 menu()
 {
 	trap "" 2 #Détéction du signal SIGINT pendant le chargement du MENU PRINCIPAL
 	
-	header 
+	print_header 
 	trace1
 	necho "${bleuPal} MENU PRINCIPAL ${null}"
 	trace2
@@ -92,14 +78,9 @@ menu()
 	_I3=0
 }
 
-
-
-
-
-                        ################################################################################################## 
-                        ##########################CONFIGURATION DE L'ANIMATION DU MENU PRINCIPAL##########################
-                        ##################################################################################################
-
+			################################################ 
+			#CONFIGURATION DE L'ANIMATION DU MENU PRINCIPAL#
+			################################################
 
 trace1()
 {
@@ -127,26 +108,15 @@ trace2()
 	fi
 	echo "${null}\n"
 }
-                 ####################################Fin de la configuration de l'animation du Menu#########################################
-
-
-
-
-
-                    ###########################################################################################################
-                    ##################################FONCTION DE LA LECTURE DU CHOIX DE L'UTILISATEUR############################
-                    ###########################################################################################################
-
+		####################################################
+		#FONCTION DE LA LECTURE DU CHOIX DE L'UTILISATEUR###
+		####################################################
 
 readChoix()
 {
 	necho "${null}${gras}\n Votre choix : ${null}${grasJaune}"
-
-	trap " clear ; detour ; exit 0 " 2
-
+	trap " clear ; trap_SIGINT ; exit 0 " 2
 	read choix
-
-	
 	echo "${null}"
 
 	nbchar=0
@@ -163,8 +133,6 @@ readChoix()
 	trap 2
 }
 
-
-
 ###FICHER QUI CONTIENDRA LES IDENTIFICATEURS DES UTILISATEURS, POUR ALLEGER LE CODE SOURCE
 if [ ! -e '.Datas/.GENERAL/.UID' ]
 then shuf -i 1990478297-9999999999 -n1 >>.Datas/.GENERAL/.UID
@@ -174,7 +142,6 @@ else
 	then shuf -i 1990478297-9999999999 -n1 >>.Datas/.GENERAL/.UID
 	fi
 fi
-
 
 ###$USER@$HOST
 HOSTNAME="$(echo "${SESSION_MANAGER}"|cut -d/ -f2 |cut -f1 -d:)"
@@ -196,5 +163,3 @@ fi
 
 echo " ${soulign1}   ${null}" >${_GSTORY}
 echo "|→→${whiteBgGrasNoir} $date : LANCEMENT DU PROGRAMME ${null}" >>${_GSTORY}
-
-	

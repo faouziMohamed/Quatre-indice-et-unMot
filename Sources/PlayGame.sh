@@ -4,11 +4,10 @@
 login="$1"
 DIFFICULTE="$2"
 
-
-##Inclusion du fichier : Tools/ImInEveryFile
 . Tools/ImInEveryFile
 color
-##INITIATION DES FICHIERS
+
+##Getting save file for the right level
 case "$DIFFICULTE" in
 	   FACILE)_SAVE=".Datas/.SAVE/Sauvegardes1"
 			  _LEVEL="Niveaux/FACILE/niveau"
@@ -26,7 +25,7 @@ then echo "$login:10:1:1">>${_SAVE}
 	 sort -o "${_SAVE}" "${_SAVE}"
 fi
 
-RECUPERATION_DES_DONNEES_DE_VERIFICATION_POUR_CHALLENGE_()
+RECOVER_DATA_FOR_CHALENGE_LEVEL()
 {
 	nbrFacile="$(ls Niveaux/FACILE/|wc -l)"
 	nbrMoyen="$(ls Niveaux/MOYEN/|wc -l)"
@@ -37,7 +36,7 @@ RECUPERATION_DES_DONNEES_DE_VERIFICATION_POUR_CHALLENGE_()
 }
 MESSAGE_(){ echo " ";}
 
-RECUPERATION_DES_DONNEES_DE_VERIFICATION_POUR_CHALLENGE_
+RECOVER_DATA_FOR_CHALENGE_LEVEL
 clear
 
 
@@ -49,20 +48,15 @@ then
 	fi
 fi
 
-##INCLUSION DU FICHIER CONTENANT LES FONCTIONS DU SCRIPT
+# Including file containg fonction for this script
 . Tools/Include/PlayGame
 
-#trap "clear ; detournerSIGINT ; exit " 2
+RECOVER_PLAYERS_DATA
 
-###RECUPÉRATION DES DONNÉES
-RECUPERATION_DES_DONNEES_DU_JOUEURS_
-
-
-
-#########Ajout d'une nouvelle Ligne dans le fichier "log" du joueur
+#########Addinf new line in log file for this current player
 echo "|\n|Partie débuté le ${bleuPal}${Temps}${null}\n\ \n \\">>"${_SESSIONLOG}"
 
-###VÉRIFICATIONS DES FICHIERS TEMPORAIRES DE LA DERNIÈRE SESSION
+### Check of temps files for the last session
 Tools/initialise/creat_tmp_file.sh "$login" "${_SAVE}"
 
 #ON VÉRIFIE SI LE JOUEUR N'A PAS FINI TOUS LES NIVEAUX
@@ -76,7 +70,8 @@ do
  	SELECTION_DU_TIRAGE_ALEATOIREMENT__ET__RECUPERATION_DES_INDICES_
 
  	#Ajout de la séléction dans le "log" du joueur
-    echo " |\n |→ ${heure} : ${bleuPal}Niveau:${niveau};Score:${score};Tirage N°:${numTirage} ${null}">>"${_SESSIONLOG}"
+    necho " |\n |→ ${heure} : ${bleuPal}Niveau:${niveau} ">>"${_SESSIONLOG}"
+	echo  ";Score:${score};Tirage N°:${numTirage} ${null}">>"${_SESSIONLOG}"
 	
 	nbchar=0
 	while [ "$motLu" != "$LA_REPONSE" ]
@@ -92,24 +87,17 @@ do
 		VERIFICATION_DU_MOT_SAISIE_
 	done
 
-	############## ON MET À JOUR LES DONNÉES DU JOUEUR $login #################
-	#####Récupération de la ligne de donées de $login dans le fichier "Sauvegardes"
+	############## Update player data $login #################
 	change="$(egrep -w ^${login} "${_TEMP_SAVE}")"
 	niveau="$x"
-	#####Mis à jour des données de $login 
 	sed -i "s/$change/$login:$score:$niveau:$numTirage/" "${_TEMP_SAVE}"
-
+	
 	config="$(stty -g)" ; stty raw
 	necho "\n \t\t\t${grasVert}Appuyez sur une touche pour continuer...${null}"
 	touche=$(head -c1);stty "$config"
+
 	clear
 	if [ "$numTirage" -gt "$nbTotTir" ]
 	then  VERIFICATION_ET_PASSAGE_DU_NIVEAU_SUIVANT_SI_NIVEAU_TERMINE_ 
 	fi
-
 done
-
-#trap 2
-
-##EOF
-		

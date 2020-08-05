@@ -1,18 +1,17 @@
- ###########################################################################################################################################
- ########################     CE FICHIER DOIT ÊTRE INCLU DANS CHAQUE SCRIPT VOULANT L'UTILISER, DE LA FAÇON SUIVANTE #######################
- ########################                           . Tools/ImInEveryFile                                            #######################
- ###########################################################################################################################################
+ ##############################################################################
+ #           CE FICHIER DOIT ÊTRE INCLU DANS CHAQUE SCRIPT VOULANT 	          #
+ #                     L'UTILISER, DE LA FAÇON SUIVANTE                       #
+ #                      . Tools/ImInEveryFile                                 #
+ ##############################################################################
 
-								#######################DÉFINITIONS DES ALIAS#########################
 alias necho="echo -n"
-
-							#______________________________________________________________________________#
-							#### ALIAS DES FICHIERS, RACCOURCISSEMENT DES PATHS POUR LA PROGRAMMATION ######
-							################################################################################
+ #____________________________________________________________________________#
+ ### ALIAS DES FICHIERS, RACCOURCISSEMENT DES PATHS POUR LA PROGRAMMATION #####
+ ##############################################################################
 mkdir -p '.Datas/.GENERAL/' 2>/dev/null
        _SAVE=".Datas/.SAVE/Sauvegardes"
       _LEVEL="Niveaux/TiragesNiveau"
-     _PLAYER=".Datas/Joueurs"
+     _PLAYER=".Datas/Players"
      _GSTORY=".Datas/.GENERAL/STORY"
     _TIRAGES=".Datas/.historique/historique_${login}/tirage.dat"
   _TEMP_SAVE=".Datas/.historique/historique_${login}/.Sauvegardes_Temporaire"
@@ -20,15 +19,9 @@ mkdir -p '.Datas/.GENERAL/' 2>/dev/null
  _HISTORIQUE=".Datas/.historique/historique_${login}"
 _TEMP_TIRAGE=".Datas/.historique/historique_${login}/.historique_temporaire_des_tirage"
 
-		##################################################################################
-		########ON MET LE TERMINAL DANS SON ETAT NORMAL PUIS IN SAUVEGARDE CET ETAT#######
-		##################################################################################
 stty sane
 _OLDSTTY="$(stty -g)"
 
-
-
-##LA FONCTION CONTENANT LES COULEURS ET LES MIS EN FORME DANS CHAQUE FICHIER
 color()
 {
 	null='\e[0m'
@@ -59,12 +52,12 @@ color()
 	noir="\e[30m"
 }
 
-				######################################################################
-				#####  CRÉATION ET AJOUTS DES DROITS POUR LES TOUS LES FICHIERS ######
-				######################################################################
+	#######################################################
+	###  CREATION AND ADDING OF RIGHTS FOR ALL FILES  #### 
+	#######################################################
 verifyFile()
 {
-	#On vérifie si tous les fichier nécessaires n'existent pas et on les créent
+	#Checking and creating every missing file
 	if [ ! -d '.Datas/.historique' ]
 	then mkdir -p .Datas/.historique
 	fi 2>/dev/null
@@ -74,13 +67,13 @@ verifyFile()
 		 chmod +rwx '.Datas/.SAVE/'
 	fi 2>/dev/null
 
-	if [ ! -f "${_SAVE}"1 ];then touch "${_SAVE}"1;fi
-	if [ ! -f "${_SAVE}"2 ];then touch "${_SAVE}"2;fi
-	if [ ! -f "${_SAVE}"3 ];then touch "${_SAVE}"3;fi
-	if [ ! -f "${_SAVE}"4 ];then touch "${_SAVE}"4;fi
+	if [ ! -f "${_SAVE}"1 ];then touch "${_SAVE}1";fi
+	if [ ! -f "${_SAVE}"2 ];then touch "${_SAVE}2";fi
+	if [ ! -f "${_SAVE}"3 ];then touch "${_SAVE}3";fi
+	if [ ! -f "${_SAVE}"4 ];then touch "${_SAVE}4";fi
 
-	if [ ! -f  '.Datas/Joueurs' ];then touch '.Datas/Joueurs'
-		 				chmod +rwx '.Datas/Joueurs';fi 2>/dev/null 
+	if [ ! -f  '.Datas/Players' ];then touch '.Datas/Players'
+		 				chmod +rwx '.Datas/Players';fi 2>/dev/null 
 
 	if [ ! -e .Datas/.GENERAL/.PUID ];then	mkdir -p .Datas/.GENERAL/
 						touch .Datas/.GENERAL/.PUID;fi
@@ -89,10 +82,6 @@ verifyFile()
 	chmod -R +rwx .Datas/* 2>'/dev/null'
 }
 
-
-									#########################################################
-									####### FONCTION QUI AFFICHE  UN MESSAGE D'AIDE #########
-									#########################################################
 RETOUR_VERS_LE_MENU_PRINCIPAL_()
 {
 	if [ "$retour" -ne 0  ]
@@ -100,16 +89,17 @@ RETOUR_VERS_LE_MENU_PRINCIPAL_()
 		necho "\n${gras}\t    Si vous voulez retourner dans le ${grasBleu}"
 		 echo "_MENU PRINCIPAL_${null} tapez ${grasJaune}--mM${null}"
 	fi
-
 }
 
-###JE SUPPRIME TOUS LES ESPACES QUI SE TROUVENT DANS LE FICHIERS ".Datas/Sauvegarde" et
-##'.Datas/Joueurs'
+## Remove all spaces in files '.Datas/Sauvegarde' and 'Datas/Players'
 sed -i "/^$/d" "${_SAVE}"*  >/dev/null 2>&1
+
+#sorting files '.Datas/.SAVE/Sauvegardes' [1,3] 
 sort -o "${_SAVE}"1 "${_SAVE}"1 >/dev/null 2>&1
 sort -o "${_SAVE}"2 "${_SAVE}"2 >/dev/null 2>&1
 sort -o "${_SAVE}"3 "${_SAVE}"3 >/dev/null 2>&1
 sort -o "${_SAVE}"4 "${_SAVE}"4 >/dev/null 2>&1
 
+#Remove spaces in players file and sort it
 sed -i "/^$/d" "${_PLAYER}"	  >/dev/null 2>&1
 sort -o "${_PLAYER}" "${_PLAYER}" >/dev/null 2>&1
