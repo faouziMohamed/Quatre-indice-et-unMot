@@ -1,346 +1,302 @@
 
 header()
 {
-	esp="                            "
-	esp1="                            "
-	line="$esp$esp1                        "
-	echo "${blackBg}$line${gras}"
-	necho "${esp}QUATRE "
-	necho "${grasVert}INDICES "
-	necho "ET "
-	necho "${null}${blackBg}${gras}UN "
-	necho "MOT${esp1}"
+    esp="                            "
+    esp1="                            "
+    line="$esp$esp1                        "
+    echo "${blackBg}$line${gras}"
+    necho "${esp}QUATRE "
+    necho "${grasVert}INDICES "
+    necho "ET "
+    necho "${null}${blackBg}${gras}UN "
+    necho "MOT${esp1}"
 
+    echo  "${gras}${soulign2}"
+    necho "____________________________________________________"
+    echo  "____________________________"
+    necho "${null}${soulign2}${gras}--------------------------------"
 
-	echo "${gras}${soulign2}"
-	necho "________________________________________________________________________________"
-	necho "${null}${soulign2}${gras}--------------------------------"
-
-	necho "${null}${gras}"
-	necho "${bleuPal} AUTHENTIFICATION ${null}"
-	necho "${gras}${soulign2}"
-	necho "------------------------------" 
-	echo "${null}"
+    necho "${null}${gras}"
+    necho "${bleuPal} AUTHENTIFICATION ${null}"
+    necho "${gras}${soulign2}"
+    necho "------------------------------" 
+    echo "${null}"
 }
 
+##################################
+###PARTIE DE CONTRÔLE DU LOGIN####
+##################################
 
-
-
-
-           ##########################################################################################################################
-           ############################################PARTIE DE CONTRÔLE DU LOGIN###################################################
-           ##########################################################################################################################
-
-
-                                        #########Saisie du nom d'utilisateur (F. PRINCIPAL)##########
+#########Saisie du nom d'utilisateur (F. PRINCIPAL)##########
 LECTURE_DU_USERNAME_()
 {
-	
-	nbchar=0
-	nbWord=0
+    nbchar=0
+    nbWord=0
 
-	header
-	if [ "$1" = "creer" ]
-	then
-		newUser="$login"
-		necho "\n \t\t   ${rougeS}_Le nom d'utilisateur ${null}${gras}"
-		 echo "$login${null}${rougeS} saisie n'existe pas_${null},"
-		echo "\t\t\t   Si vous-voulez le créer tapez ${grasJaune}--creat${null}."
-	fi
+    header
 
-	RETOUR_VERS_LE_MENU_PRINCIPAL_
-	necho "\n${gras}${blackBg} ${soulign1}Nom d'utilisateur:${null}${grasJaune}  "
-	read login
-	echo "${null}"
-	retour=1
+    if [ "$1" = "creer" ]
+    then
+        newUser="$login"
+        necho "\n \t\t   ${rougeS}_Le nom d'utilisateur ${null}${gras}"
+         echo "$login${null}${rougeS} saisie n'existe pas_${null},"
+        echo "\t\t\t   Si vous-voulez le créer tapez ${grasJaune}--create${null}."
+    fi
+    
+    RETOUR_VERS_LE_MENU_PRINCIPAL_
+    necho "\n${gras}${blackBg} ${soulign1}Nom d'utilisateur:${null}${grasJaune}  "
+    read login
+    echo "${null}"
+    retour=1
 
-	#Nombre de carractère et Nombre de Mots
-	nbchar="$(expr length "$login")"
-	nbWord="$(echo "$login"| wc -w)"
+    #Nombre de carractère et Nombre de Mots
+    nbchar="$(expr length "$login")"
+    nbWord="$(echo "$login" | wc -w)"
 
-	#Test sur le nombre de caractères
-	if [ "$nbchar" -eq 0 ]
-	then 
-		necho " \t\t\t  ${rose}_Vous n'avez rien saisie_${null} "
-		echo "  |\n  \___ ${heure} :${gras} LOGIN        ${null}: ${rose}RIEN N'A ÉTÉ SAISIE ${null}\n  |" >> "${_GSTORY}"
-		sleep 1.5
-		clear
-		LECTURE_DU_USERNAME_
-		return 0
-	elif [ "$login" = "--mM" ]
-	then #"mM" veut dire 'main Menu'
-		sh QIUM.sh
-		exit 0
+    #Test sur le nombre de caractères
+    if [ "$nbchar" -eq 0 ]
+    then 
+        necho " \t\t\t  ${rose}_Vous n'avez rien saisie_${null} "
+        echo "  |\n  \___ ${heure} :${gras} LOGIN        ${null}: ${rose}RIEN N'A ÉTÉ SAISIE ${null}\n  |" >> "${_GSTORY}"
+        sleep 1.5
+        clear
+        LECTURE_DU_USERNAME_
+        return 0
+    elif [ "$login" = "--mM" ]
+    then #"mM" veut dire 'main Menu'
+        sh QIUM.sh
+        exit 0
 
-	elif [ "$nbchar" -lt 4 -o "$nbchar" -gt 14 -o "$nbWord" -gt 1 ]
-	then
-		heure="$(date +%T)"
-		necho " \t\t\t  ${rose}_Nom d'utilisateur Incorrect_${null} "
-		echo "  |\n  \___ ${heure} :${gras} LOGIN        ${null}: ${rougeS}Login Incorrect ${null}\n  |" >> "${_GSTORY}"
-		sleep 1.5
-		clear
-		LECTURE_DU_USERNAME_
-		return 0
-	fi
+    elif [ "$nbchar" -lt 4 -o "$nbchar" -gt 14 -o "$nbWord" -gt 1 ]
+    then
+        heure="$(date +%T)"
+        necho " \t\t\t  ${rose}_Nom d'utilisateur Incorrect_${null} "
+        echo "  |\n  \___ ${heure} :${gras} LOGIN        ${null}: ${rougeS}Login Incorrect ${null}\n  |" >> "${_GSTORY}"
+        sleep 1.5
+        clear
+        LECTURE_DU_USERNAME_
+        return 0
+    fi
 
-	#Recherche du login dans de le fichier '.Datas/Joueurs'
-	testLog="$(egrep -w ^"$login" '.Datas/Joueurs'|cut -f1 -d:)"
+    #Recherche du login dans de le fichier '.Datas/Players'
+    testLog="$(egrep -w ^"$login" '.Datas/Players'|cut -f1 -d:)"
 
-	if [ "$login" = "--creat" ] #On va créer le compte de nom "$login"
-	then
-		Sources/user/Creat.sh "$newUser" 
-		exit 0 
+    if [ "$login" = "--create" ] #On va créer le compte de nom "$login"
+    then
+        Sources/user/Creat.sh "$newUser" 
+        exit 0 
 
-	elif [ "$login" != "$testLog" ]
-	then
-		clear
-		echo "  |\n  \___ ${heure} :${gras} LOGIN        ${null}: ${rougeS}Login Incorrect ou Innexistant ${null}\n  |" >> "${_GSTORY}"
-		LECTURE_DU_USERNAME_ "creer"
-		return 0
-	fi
+    elif [ "$login" != "$testLog" ]
+    then
+        clear
+        echo "  |\n  \___ ${heure} :${gras} LOGIN        ${null}: ${rougeS}Login Incorrect ou Innexistant ${null}\n  |" >> "${_GSTORY}"
+        LECTURE_DU_USERNAME_ "creer"
+        return 0
+    fi
 
-	#ECRITURE DANS LE "LOG"
-	_SESSIONLOG=".Datas/.historique/historique_${login}/session.log"
+    #ECRITURE DANS LE "LOG"
+    _SESSIONLOG=".Datas/.historique/historique_${login}/session.log"
    heure="$(date +%T)"
-	jour="$(date +%A)"
-	date="$(date +%x)"
+    jour="$(date +%A)"
+    date="$(date +%x)"
    Temps="$(echo "${jour} ${date} à ${heure}")"
    cat "${_GSTORY}" >> "${_SESSIONLOG}"
     echo "  |\n  \___ ${heure} :${gras} LOGIN        ${null}: ${vert}Login correct ${null}\n  |\n  |" >> "${_SESSIONLOG}"
-	clear   
-
+    clear   
 }
 
+ #######################################
+ ##PARTIE DE CONTRÔLE DU MOT DE PASSE###
+ #######################################
 
-
- 
-
- 
-
-
-            #################################################################################################################################
-            ############################################PARTIE DE CONTRÔLE DU MOT DE PASSE###################################################
-            #################################################################################################################################
-
-
-
-#___________________________________________________________________________________________________________________________________________#
-################### FONCTION QUI LIT LE MOT DE PASSE EN REMPLAÇANT LES CARACTÈRES SAISIES PAR DES ÉTOILES "*" ###############################
+#______________________________________________#
+# FONCTION QUI LIT LE MOT DE PASSE EN REMPLAÇANT 
+# LES CARACTÈRES SAISIES PAR DES ÉTOILES "*" ##
 
 PASSWORD_READER_()
-{    
-	#SAUVEGARDE DE L'ÉTAT ACTUEL DU TERMINAL
-	_OLDSTTY="$(stty -g)"
-
-	#LA VARIABLE 'BS' PREND PREND LE CARACTÈRE GÉNÉRÉ PAR LA TOUCHE "backspace" 
-	BS=$(tput kbs) 	
-
-	###ON DÉSACTIVE LE MODE CANONIQUE ET L'ECHO DES INPUTS 
+{
+    _OLDSTTY="$(stty -g)"
+    BS=$(tput kbs) 	
     stty -icanon -echo
-    
-    #INITIALISATION DE LA VARIABLE QUI VA PRENDRE LE MOT DE PASSE
     pass=
 
-    #####SAISIE DU MOT DE PASSE
     while true
-    do  CHAR=$(head -c1)                  ###LECTURE D'UNE SEULE CARACTÈRE
-
+    do  CHAR=$(head -c1) 
         case "$CHAR" in
-
         "$BS")  if [ -n "$pass" ]
-        		then   ########LORS DE L'APPUIE SUR LA TOUCHE BACKSPACE, LES ACTIONS SUIVANTS SONT FAITES
-                    pass=${pass%?}        ###ON SUPPRIME LE DERNIER CARACTÈRE PAR SUBSTITUTION
-                    printf "\b \b"		  ###ON SUPPRIME LE DERNIER ÉTOILE "*" DANS LA SORTIE STANDARD
+                then  
+                    pass=${pass%?}  
+                    printf "\b \b"	
                 fi 
                 ;;
 
-           "")  printf "\n"; break ;;     ###ON AFFICHE UN SAUT DE LIGNE LORS DE L'APPUIE SUR "RETURN" "ENTRER"
-
-            *)  printf '*'			      ###AFFICHAGE D'UNE ÉTOILE PAR SAISIE
-                pass="${pass}${CHAR}"  	  #AJOUT DE "CHAR" SUR "pass"
-               ;;
+           "")  printf "\n"; break ;; 
+            *)  printf '*'
+                pass="${pass}${CHAR}";;
         esac
     done
 
-    stty "${_OLDSTTY}" >/dev/null 2>&1    ###RESTAURATION DU MODE NORMAL DU TERMINAL
+    stty "${_OLDSTTY}" >/dev/null 2>&1
 }
 
-
-
-
-#Fonction qui contrôle le mot de passe Saisie
 verifier_Si_Le_Mot_de_Passe_Ne_contient_Pas_des_erreurs()
 {
+    if [ "$nbchar" -eq 0 ]
+    then 
+        clear
 
-	if [ "$nbchar" -eq 0 ]
-	then 
-		clear
+        heure="$(date +%T)"
+        necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}${bleuCiel} " >> "${_SESSIONLOG}"
+        echo ":${null} ${rose}RIEN N'A ÉTÉ SAISIE${null}\n  |" >> "${_SESSIONLOG}"
+        LECTURE_DU_MOT_MOT_DE_PASSE_ "_0char"
 
-		heure="$(date +%T)"
-		necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}${bleuCiel} " >> "${_SESSIONLOG}"
-		echo ":${null} ${rose}RIEN N'A ÉTÉ SAISIE${null}\n  |" >> "${_SESSIONLOG}"
-		LECTURE_DU_MOT_MOT_DE_PASSE_ "_0char"
+    elif [ "$pass" = "--oth" ]
+    then
+        clear
+        heure="$(date +%T)"
+        necho "  \___ ${heure} : ${bleuCiel}ESSAIE D'UN AUTRE COMPTE APRÈS $i TENTATIVES SANS SUCCÉ${null}\n  |" >> "${_SESSIONLOG}"
+        Sources/user/connect.sh
+        exit 0
 
-	elif [ "$pass" = "--oth" ]
-	then
-		clear
-		heure="$(date +%T)"
-		necho "  \___ ${heure} : ${bleuCiel}ESSAIE D'UN AUTRE COMPTE APRÈS $i TENTATIVES SANS SUCCÉ${null}\n  |" >> "${_SESSIONLOG}"
-		Sources/user/connect.sh
-		exit 0
+    elif [ "$pass" = "--mM" ]
+    then #"mM" veut dire 'main Menu'
+    heure="$(date +%T)"
+        necho "  \___ ${heure} : ${bleuCiel}RETOUR VERS LE MENU PRINCIPAL${null}\n  |" >> "${_SESSIONLOG}"
+        sh QIUM.sh
+        exit 0
 
-	elif [ "$pass" = "--mM" ]
-	then #"mM" veut dire 'main Menu'
-	heure="$(date +%T)"
-		necho "  \___ ${heure} : ${bleuCiel}RETOUR VERS LE MENU PRINCIPAL${null}\n  |" >> "${_SESSIONLOG}"
-		sh QIUM.sh
-		exit 0
+    elif [ "$pass" = "--help" ]
+    then
+        clear
+        heure="$(date +%T)"
+        echo "  \___ ${heure} : ${jauneS}OUVERTURE DE L'UTILITAIRE DE REINITIALISATION DU MOT DE PASSE${null}" >>"${_SESSIONLOG}"
+       necho " _/${jauneS}\t\t\t\t APRÈS $i TENTATIVES SANS SUCCÉ${null}\n/\n|" >> "${_SESSIONLOG}"
+        Tools/initialise/Human_Can_Forget.sh "$login"
+        
+        sleep 1
+        exit 0
 
-	elif [ "$pass" = "--help" ]
-	then
-		clear
-		heure="$(date +%T)"
-		echo "  \___ ${heure} : ${jauneS}OUVERTURE DE L'UTILITAIRE DE REINITIALISATION DU MOT DE PASSE${null}" >>"${_SESSIONLOG}"
-	   necho " _/${jauneS}\t\t\t\t APRÈS $i TENTATIVES SANS SUCCÉ${null}\n/\n|" >> "${_SESSIONLOG}"
-		Tools/initialise/Human_Can_Forget.sh "$login"
-		
-		sleep 1
-		exit 0
-
-	elif [ "$nbchar" -lt 4 ]
-	then
-		clear
-		heure="$(date +%T)"
-		i="$(expr $i + 1)"
-		necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}${bleuCiel} :${null} ${gras}Tentative N° ${i} " >> "${_SESSIONLOG}"
-		echo ":${null} ${rose}Mot de passe courte${null}\n  |" >> "${_SESSIONLOG}"
-		LECTURE_DU_MOT_MOT_DE_PASSE_ "_short"
-
-	fi
+    elif [ "$nbchar" -lt 4 ]
+    then
+        clear
+        heure="$(date +%T)"
+        i="$(expr $i + 1)"
+        necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}${bleuCiel} :${null} ${gras}Tentative N° ${i} " >> "${_SESSIONLOG}"
+        echo ":${null} ${rose}Mot de passe courte${null}\n  |" >> "${_SESSIONLOG}"
+        LECTURE_DU_MOT_MOT_DE_PASSE_ "_short"
+    fi
 }
 
 Verification_Si_Le_Mot_de_passe_est_correct_et_connexion_reussi_()
 {
-	_SESSIONLOG=".Datas/.historique/historique_${login}/session.log"
-			       jour="$(date +%A)"
-		      heure="$(date +%T)"
-		dateComplet="$(date +%x)"
+    _SESSIONLOG=".Datas/.historique/historique_${login}/session.log"
+                   jour="$(date +%A)"
+              heure="$(date +%T)"
+        dateComplet="$(date +%x)"
 
-	if [ "$testPass" = "$pass" ]
-	then #Déscription du joueur
-		sexe="$(egrep -w ^"$login" '.Datas/Joueurs'|cut -f3 -d:|cut -f1 -d'|')"
+    if [ "$testPass" = "$pass" ]
+    then #Déscription du joueur
+        sexe="$(egrep -w ^"$login" '.Datas/Players'|cut -f3 -d:|cut -f1 -d'|')"
 
-		if [ "$sexe" = "H" ]
-		then genre="Mr."
-		else genre="Mme/Mlle.";fi
+        if [ "$sexe" = "H" ]
+        then genre="Mr."
+        else genre="Mme/Mlle.";fi
 
-		echo "\n\n\t\t\t ${gras}Ravi de vous revoir ${null}${italic}${grasBleu}$genre $login ${null} "
-		sleep 2
+        echo "\n\n\t\t\t ${gras}Ravi de vous revoir ${null}${italic}${grasBleu}$genre $login ${null} "
+        sleep 2
 
-		### ECRITURE DANS LE "LOG" 
-		i=$(expr $i + 1)
-		necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}${bleuCiel} : ${gras}Tentative N° ${i} " >> "${_SESSIONLOG}"
-		echo ":${null} ${vert}Mot de passe correct${null}\n${soulign1}  ${null}|" >> "${_SESSIONLOG}"
-		
-		necho "|\n|→ ${grasVert}${blackBg} Nouvelle connexion le $jour $dateComplet"  >> "${_SESSIONLOG}"
-		 echo " à $heure ${null}\n|" >>"${_SESSIONLOG}" 
-		####FIN DE L'ECRITURE DANS LE LOG
+        ### ECRITURE DANS LE "LOG" 
+        i=$(expr $i + 1)
+        necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}${bleuCiel} : ${gras}Tentative N° ${i} " >> "${_SESSIONLOG}"
+        echo ":${null} ${vert}Mot de passe correct${null}\n${soulign1}  ${null}|" >> "${_SESSIONLOG}"
+        
+        necho "|\n|→ ${grasVert}${blackBg} Nouvelle connexion le $jour $dateComplet"  >> "${_SESSIONLOG}"
+         echo " à $heure ${null}\n|" >>"${_SESSIONLOG}" 
+        ####FIN DE L'ECRITURE DANS LE LOG
 
-		     Tools/defilement.sh "$login"
-		Sources/interfaceMenu.sh "$login" "$genre"
-		exit 0
-	else
-		clear
-		i="$(expr $i + 1)"
-		necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}${bleuCiel} :${null} ${gras}Tentative N° ${i} " >> "${_SESSIONLOG}"
-		echo ":${null} ${rose}Mot de passe incorrect${null}\n  |" >> "${_SESSIONLOG}"
+             Tools/defilement.sh "$login"
+        Sources/interfaceMenu.sh "$login" "$genre"
+        exit 0
+    else
+        clear
+        i="$(expr $i + 1)"
+        necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}">>"${_SESSIONLOG}"
+        necho "${bleuCiel} :${null} ${gras}Tentative N° ${i} ">>"${_SESSIONLOG}"
+     echo ":${null} ${rose}Mot de passe incorrect${null}\n  |">>"${_SESSIONLOG}"
 
-		LECTURE_DU_MOT_MOT_DE_PASSE_ "_inc"
-	fi
+        LECTURE_DU_MOT_MOT_DE_PASSE_ "_inc"
+    fi
 }
 
-
-
-                          ###################Saisie du Mot de passe (F. PRINCIPAL)###################
+ ######Saisie du Mot de passe (F. PRINCIPAL)######
 LECTURE_DU_MOT_MOT_DE_PASSE_()
 {
-	nbWord=0
-	nbchar=0
-	
-
-	header
+    nbWord=0
+    nbchar=0
+    header
 
     #MESSAGE D'ERREUR
-	if [ "$1" = "_0char" ]
-	then 
-		necho "\n \t\t\t  ${rose}_Vous n'avez rien saisie_\n${null} "
-		sleep 1.5
+    if [ "$1" = "_0char" ]
+    then 
+        necho "\n \t\t\t  ${rose}_Vous n'avez rien saisie_\n${null} "
+        sleep 1.5
 
-	elif [ "$1" = "_short"  ]
-	then
-		necho "\n \t\t\t  ${rose}_Mot de Passe trop courte_${null}\n"
-		
-		sleep 1.3
+    elif [ "$1" = "_short"  ]
+    then
+        necho "\n \t\t\t  ${rose}_Mot de Passe trop courte_${null}\n"
+        sleep 1.3
 
-	elif [ "$1" = "_inc" ]
-	then
-		echo "\n \t\t\t  ${rose}_Mot de passe Incorrect_${null}"
-		sleep 1.1
-	fi
+    elif [ "$1" = "_inc" ]
+    then
+        echo "\n \t\t\t  ${rose}_Mot de passe Incorrect_${null}"
+        sleep 1.1
+    fi
 
-	if [ "$i" -ge 3 ]
-	then
-		necho "\n${italic} Il semblerait que vous ayez oublié  votre mot" 
-		echo " de passe, pour le réinitialiser "
-		echo " \t\t\t\ttapez ${null}${grasJaune}--help${null} "
-		
-		if [ "$(expr $i % 3)" -eq 0 ]
-		then
-			heure="$(date +%T)"
-			necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}${bleuCiel} " >> "${_SESSIONLOG}"
-			echo ":${null} ${rose}$i TENTATIVES SANS SUCCÉ${null}\n  |" >> "${_SESSIONLOG}"
-		fi
-	fi
-	##FIN DES MESSAGE D'ERREURS
+    if [ "$i" -ge 3 ]
+    then
+        necho "\n${italic} Il semblerait que vous ayez oublié  votre mot" 
+        echo " de passe, pour le réinitialiser "
+        echo " \t\t\t\ttapez ${null}${grasJaune}--help${null} "
+        
+        if [ "$(expr $i % 3)" -eq 0 ]
+        then
+            heure="$(date +%T)"
+            necho "  \___ ${heure} : ${gras}MOT DE PASSE${null}${bleuCiel} " >> "${_SESSIONLOG}"
+            echo ":${null} ${rose}$i TENTATIVES SANS SUCCÉ${null}\n  |" >> "${_SESSIONLOG}"
+        fi
+    fi
 
-	#Un message sera affiché lors d'un deuxième essaie de création du login
-	if [ "$retour" -ne 0 ]
-	then
-		echo "\n ${gras}\t\tSi vous-voulez essayer un autre compte taper ${grasJaune}--oth${null}."
-		
-	   necho "${gras}\t    Si vous voulez retourner dans le ${grasBleu}_MENU PRINCIPAL_"
-		echo "${null} tapez ${grasJaune}--mM${null}"
-	fi
+    #Un message sera affiché lors d'un deuxième essaie de création du login
+    if [ "$retour" -ne 0 ]
+    then
+        echo "\n ${gras}\t\tSi vous-voulez essayer un autre compte taper ${grasJaune}--oth${null}."
+        
+       necho "${gras}\t    Si vous voulez retourner dans le ${grasBleu}_MENU PRINCIPAL_"
+        echo "${null} tapez ${grasJaune}--mM${null}"
+    fi
 
-	#Saisie du Mot de passe
-	echo "\n ${soulign1}${gras}Nom d'utilisateur:${null}${grasJaune}  $login ${null} "
-	necho "${gras}${blackBg} ${soulign1}Mot de Passe     :${null}${grasRouge}  "
-	
-	#APPEL DE LA FONCTION QUI LIT LE MOT DE PASSE
-	PASSWORD_READER_
+    #Saisie du Mot de passe
+    echo "\n ${soulign1}${gras}Nom d'utilisateur:${null}${grasJaune}  $login ${null} "
+    necho "${gras}${blackBg} ${soulign1}Mot de Passe     :${null}${grasRouge}  "
+    
+    #APPEL DE LA FONCTION QUI LIT LE MOT DE PASSE
+    PASSWORD_READER_
 
-	echo "${null}"
-	#Fin de la saisie du mot de passe
-	retour=1
+    echo "${null}"
+    #Fin de la saisie du mot de passe
+    retour=1
 
-	#Nombre de carractères du mot de passe
-	nbchar="$(expr length "$pass")"
-	
-	#Test sur le nombre de caractères
-	verifier_Si_Le_Mot_de_Passe_Ne_contient_Pas_des_erreurs
+    #Nombre de carractères du mot de passe
+    nbchar="$(expr length "$pass")"
+    
+    #Test sur le nombre de caractères
+    verifier_Si_Le_Mot_de_Passe_Ne_contient_Pas_des_erreurs
 
-	#Récupération du Mot de passe de $login #Ce mot de^passe est "Hashé" par mon algorithme de hash
-	#Que j'ai écris en langage C
-	###Donc on doit aussi hasher le mot de passe saisie pour comparer les deux 
-	###Mot de passe s'ils sont égaux
-	testPass="$(egrep -w ^"$login" '.Datas/Joueurs'|cut -f2 -d:)"  2>/dev/null
+    testPass="$(egrep -w ^"$login" '.Datas/Players'|cut -f2 -d:)"  2>/dev/null
 
-	#Hachage du mot de passe saisie
-	pass="$(Tools/cryptMe "$(echo "$pass")"  |tr [:@^] [.1$])"
+    #Hachage du mot de passe saisie
+    pass="$(Tools/cryptMe "$(echo "$pass")"  |tr [:@^] [.1$])"
 
-	#Si le mot de passe est correct l'utilisateur sera redirigé sur son compte
-	Verification_Si_Le_Mot_de_passe_est_correct_et_connexion_reussi_
+    #Si le mot de passe est correct l'utilisateur sera redirigé sur son compte
+    Verification_Si_Le_Mot_de_passe_est_correct_et_connexion_reussi_
 }
-
-
-#EOF

@@ -1,0 +1,57 @@
+[32m\ 
+|__________________[1;33mINSCRIPTION FAIT LE WEDNESDAY 08/05/2020 à 11:24:38[0m
+|
+|→→ [1;35mAFFICHAGE DE L'INTERFACE MENU[0m
+|
+|
+|→ [32mJeu quitter à 11:24:46 AM[0m
+|__Session fermée||
+
+ [4:1m   [0m
+|→→[1;47;30m Wednesday 08/05/2020 11:25:33 AM : LANCEMENT DU PROGRAMME [0m
+|→→[46m[1m[30m Wednesday 08/05/2020 11:25:33 AM : AFFICHAGE DU MENU PRINCIPAL [0m
+|
+| [1;47;30mCHOIX NUMÉRO 1 :[34m SE CONNECTER[0m
+|
+|[4:1m→→[0m [36mPROCESSUS DE CONNEXION LANCÉ[0m Le Wednesday 08/05/2020 à 11:25:38
+  |
+  \___  :[1m LOGIN        [0m: [31mLogin Incorrect ou Innexistant [0m
+  |
+  |
+  \___ 11:32:03 :[1m LOGIN        [0m: [32mLogin correct [0m
+  |
+  |
+ [4:1m   [0m
+|→→[1;47;30m Wednesday 08/05/2020 11:32:09 AM : LANCEMENT DU PROGRAMME [0m
+|→→[46m[1m[30m Wednesday 08/05/2020 11:32:09 AM : AFFICHAGE DU MENU PRINCIPAL [0m
+|
+| [1;47;30mCHOIX NUMÉRO 1 :[34m SE CONNECTER[0m
+|
+|[4:1m→→[0m [36mPROCESSUS DE CONNEXION LANCÉ[0m Le Wednesday 08/05/2020 à 11:32:13
+  |
+  \___ 11:32:15 :[1m LOGIN        [0m: [32mLogin correct [0m
+  |
+  |
+  \___ 11:39:48 : [1mMOT DE PASSE[0m[36m :[0m [1mTentative N° 1 :[0m [35mMot de passe incorrect[0m
+  |
+  \___ 11:39:52 : [1mMOT DE PASSE[0m[36m : [1mTentative N° 2 :[0m [32mMot de passe correct[0m
+[4:1m  [0m|
+|
+|→ [1;32m[40m Nouvelle connexion le Wednesday 08/05/2020 à 11:39:52 [0m
+|
+|
+|→→ [1;35mAFFICHAGE DE L'INTERFACE MENU[0m
+|
+|→→ [1;47;30mCHOIX NUMÉRO 1 : CONTINUER UNE PARTIE[0m
+ |
+ |→→ [1;47;30mCHOIX NUMÉRO 1 : [34mDIFFICULTÉ = FACILE[0m
+|
+|Partie débuté le [1;36m[0m
+\ 
+ \
+ \___ [0m11:40:02 :[1;33m[40mDÉMARAGE DE L'UTILITAIRE DE SAUVEGARDE DES DONNÉES[0m
+ / 
+ |→→ [1;32mDonnées sauvegardées ( ^_^ )[0m
+ |°° Le Jeu réprend
+|
+|→→ [1;32mAFFICHAGE DE L'INTERFACE MENU[0m

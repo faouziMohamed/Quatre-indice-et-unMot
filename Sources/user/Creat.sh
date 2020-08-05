@@ -7,24 +7,16 @@
 
 arg1="$1" #Réception d'un argument qui est un username
 
-#Inclusion du fichier Tools/ImInEveryFile, voyez ceci comme dans le langage C avec les "#include<file.h>" 
 . Tools/ImInEveryFile
-#Activation des couleurs, Pour les désactivé il suffira de commenter la ligne suivante [#color]
 color
 verifyFile
 
-#####INCLUSION DE FICHIER CONTENANT LES FONCTIONS DE CE SCRIPT
 . Tools/Include/Creat 
+#########################
+##DESCRIPTION DU JOUEUR##
+#########################
 
-
-
-
-            #################################################################################################################################
-            ####################################################DESCRIPTION DU JOUEUR########################################################
-            #################################################################################################################################
-
-
-                                    ######Fonction qui lit la description du joeur (F. PRINCIPAL)########
+######Fonction qui lit la description du joeur (F. PRINCIPAL)########
 DESCRIPTION_DU_JOUEUR_()
 {
 	clear
@@ -44,7 +36,7 @@ DESCRIPTION_DU_JOUEUR_()
 	blankSpace2='                               '
 	blankSpace3='                                                                 '
    necho "${blackBg}"
-	echo "$blankSpace$blankSpace"
+	echo "$blankSpace"
 	echo "${grasBleu}${blankSpace1}INSCRIPTION RÉUSSIE${blankSpace2}${blackBg} "
    necho "$blankSpace"
    necho "\n${italic}${bleuPal}Les informations que nous avons"

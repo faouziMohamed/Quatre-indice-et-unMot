@@ -1,146 +1,147 @@
 trap_SIGINT()
 {	
-	_10ligne="\n\n\n\n\n\n\n\n\n\n"
-	   necho "${_10ligne}${null} ${gras}    Vous avez décidé de ${grasJaune}quitter le jeu${null},"
-	    echo " ${gras}Confirmez-vous cette action${null} [${grasRouge}O${null}/${grasBleu}N${null}]? :  "
-	read choix
+    _10ligne="\n\n\n\n\n\n\n\n\n\n"
+       necho "${_10ligne}${null} ${gras}    Vous avez décidé de ${grasJaune}quitter le jeu${null},"
+        echo " ${gras}Confirmez-vous cette action${null} [${grasRouge}O${null}/${grasBleu}N${null}]? :  "
+    read choix
 
-	case "$choix" in
-	    o|O|Oui|OUI|oui) 
-			clear
-			print_header
-			necho "${_10ligne}${null}${whiteBgGrasNoir}\t\t\t\t Merci"
-			echo  " et à Bientôt ${_10ligne}${null}"
-			sleep 1
-			chmod -rwx "${_PLAYER}" "${_SAVE}" "Niveaux/*"  >'/dev/null' 2>&1
-			exit 0 ;;
-		n|N|No|no|Non|NO|NON) 
-			clear
-			main 0
-			exit 0;;
-		*) echo "\t\t S'il vous plait veuillez répondre par ${grasRouge}oui ${null} ou${grasBleu} non${null}"
-			sleep 2.1
-			clear
-			trap_SIGINT
-			exit 0 ;;
-	esac
+    case "$choix" in
+        o|O|Oui|OUI|oui) 
+            clear
+            print_header
+            necho "${_10ligne}${null}${whiteBgGrasNoir}\t\t\t\t Merci"
+            echo  " et à Bientôt ${_10ligne}${null}"
+            sleep 1
+            chmod -rwx "${_PLAYER}" "${_SAVE}" "Niveaux/*"  >'/dev/null' 2>&1
+            exit 0 ;;
+        n|N|No|no|Non|NO|NON) 
+            clear
+            main 0
+            exit 0;;
+        *) echo "\t\t S'il vous plait veuillez répondre par ${grasRouge}oui ${null} ou${grasBleu} non${null}"
+            sleep 2.1
+            clear
+            trap_SIGINT
+            exit 0 ;;
+    esac
 }
 
 print_header()
 {
-	esp="                            "
-	esp1="                            "
-	line="$esp$esp1                        "
-	clear
-	echo "${blackBg}$line${gras}"
-	necho "${blackBg}$line${gras}\n${esp}QUATRE "
-	necho "${grasJaune}INDICES "
-	necho "ET "
-	necho "${null}${blackBg}${gras}UN "
-	necho "MOT${esp1}\n"
-	necho "$line"
+    esp="                            "
+    esp1="                            "
+    line="$esp$esp1                        "
+    clear
+    echo "${blackBg}$line${gras}"
+    necho "${blackBg}$line${gras}\n${esp}QUATRE "
+    necho "${grasJaune}INDICES "
+    necho "ET "
+    necho "${null}${blackBg}${gras}UN "
+    necho "MOT${esp1}\n"
+    necho "$line"
 }
 
-                   #################################
-                   ####FONCTION DU MENU PRINCIPAL###
-                   #################################
+    #################################
+    ####FONCTION DU MENU PRINCIPAL###
+    #################################
 menu()
 {
-	trap "" 2 #Détéction du signal SIGINT pendant le chargement du MENU PRINCIPAL
-	
-	print_header 
-	trace1
-	necho "${bleuPal} MENU PRINCIPAL ${null}"
-	trace2
+    trap "" 2 #Détéction du signal SIGINT pendant le chargement du MENU PRINCIPAL
+    
+    print_header 
+    trace1
+    necho "${bleuPal} MENU PRINCIPAL ${null}"
+    trace2
 
-	echo "${gras} Faites Votre choix\n"
-	#Option du Menu
-	rouge='\e[31m'
-	echo " \t\t #${rouge}1 ${null}- ${vert}Se connecter${null}";sleep "$_I3"
-	echo " \t\t #${rouge}2 ${null}- ${vert}Créer un nouveau Compte${null}";sleep "$_I3"
-	echo " \t\t #${rouge}3 ${null}- ${vert}Se connecter en tant qu'utilisateur invité${null}";sleep "$_I3"
-	echo " \t\t #${rouge}4 ${null}- ${vert}Changer de thème${null}";sleep "$_I3"
-	echo " \t\t #${rouge}5 ${null}- ${vert}Quitter le jeu${null}";sleep "$_I3"
-	necho "${gras}${soulign2}\n"
+    echo "${gras} Faites Votre choix\n"
+    #Option du Menu
+    rouge='\e[31m'
+    echo " \t\t #${rouge}1 ${null}- ${vert}Se connecter${null}";sleep "$_I3"
+    echo " \t\t #${rouge}2 ${null}- ${vert}Créer un nouveau Compte${null}";sleep "$_I3"
+    echo " \t\t #${rouge}3 ${null}- ${vert}Se connecter en tant qu'utilisateur invité${null}";sleep "$_I3"
+    echo " \t\t #${rouge}4 ${null}- ${vert}Changer de thème${null}";sleep "$_I3"
+    echo " \t\t #${rouge}5 ${null}- ${vert}Quitter le jeu${null}";sleep "$_I3"
+    necho "${gras}${soulign2}\n"
 
-	#trace 3
-	if [ "$_I1" != 0 ]
-	then
-		for i in `seq 1 80`; do necho "_";sleep "$_I2";	done;echo 
-	else
-		necho "________________________________________________________________________________\n"
-	fi #fin de trace 3
+    #trace 3
+    if [ "$_I1" != 0 ]
+    then
+        for i in `seq 1 80`; do necho "_";sleep "$_I2";	done;echo 
+    else
+        necho "___________________________________"
+        necho "_____________________________________________\n"
+    fi #fin de trace 3
 
-	trap 2 #On arrête la  détéction du signal SIGINT
+    trap 2 #On arrête la  détéction du signal SIGINT
 
-	_I1=0
-	_I2=0
-	_I3=0
+    _I1=0
+    _I2=0
+    _I3=0
 }
-
-			################################################ 
-			#CONFIGURATION DE L'ANIMATION DU MENU PRINCIPAL#
-			################################################
+    ################################################ 
+    #CONFIGURATION DE L'ANIMATION DU MENU PRINCIPAL#
+    ################################################
 
 trace1()
 {
-	echo "${gras}${soulign2}"
-	if [ "$_I1" != 0 ]
-	then
-		for i in `seq 1 80`; do necho "_";sleep "$_I1";done;echo "${null}${gras}${soulign2}"
-		for i in `seq 1 34`; do necho "-";sleep "$_I2";done
-	else
-		necho "________________________________________________________________________________"
-		necho "${null}${gras}${soulign2}----------------------------------"
-	fi
+    echo "${gras}${soulign2}"
+    if [ "$_I1" != 0 ]
+    then
+        for i in `seq 1 80`; do necho "_";sleep "$_I1";done;echo "${null}${gras}${soulign2}"
+        for i in `seq 1 34`; do necho "-";sleep "$_I2";done
+    else
+        necho "_________________________________"
+        necho "_______________________________________________"
+        necho "${null}${gras}${soulign2}----------------------------------"
+    fi
 
-	necho "${null}"
+    necho "${null}"
 }
 
 trace2()
 {
-	necho "${gras}${soulign2}"
-	if [ "$_I1" != 0 ]
-	then
-		for i in `seq 1 30`;do necho "${soulign2}-";sleep "$_I2"; done
-	else
-		necho "------------------------------" 
-	fi
-	echo "${null}\n"
+    necho "${gras}${soulign2}"
+    if [ "$_I1" != 0 ]
+    then
+        for i in `seq 1 30`;do necho "${soulign2}-";sleep "$_I2"; done
+    else
+        necho "------------------------------" 
+    fi
+    echo "${null}\n"
 }
-		####################################################
-		#FONCTION DE LA LECTURE DU CHOIX DE L'UTILISATEUR###
-		####################################################
+    ####################################################
+    #FONCTION DE LA LECTURE DU CHOIX DE L'UTILISATEUR###
+    ####################################################
 
 readChoix()
 {
-	necho "${null}${gras}\n Votre choix : ${null}${grasJaune}"
-	trap " clear ; trap_SIGINT ; exit 0 " 2
-	read choix
-	echo "${null}"
+    necho "${null}${gras}\n Votre choix : ${null}${grasJaune}"
+    trap " clear ; trap_SIGINT ; exit 0 " 2
+    read choix
+    echo "${null}"
 
-	nbchar=0
-	nbchar="$(expr length "$choix")"
+    nbchar=0
+    nbchar="$(expr length "$choix")"
 
-	if [ "$nbchar" -eq 0 ]
-	then 
-		echo " \t\t\t\t${null}${rose}_Vous n'avez rien saisie_${null} "
-		sleep 1.5
-		clear
-		menu
-		readChoix
-	fi
-	trap 2
+    if [ "$nbchar" -eq 0 ]
+    then 
+        echo " \t\t\t\t${null}${rose}_Vous n'avez rien saisie_${null} "
+        sleep 1.5
+        clear
+        menu
+        readChoix
+    fi
+    trap 2
 }
 
-###FICHER QUI CONTIENDRA LES IDENTIFICATEURS DES UTILISATEURS, POUR ALLEGER LE CODE SOURCE
+###Beta, to the next comming version 
 if [ ! -e '.Datas/.GENERAL/.UID' ]
 then shuf -i 1990478297-9999999999 -n1 >>.Datas/.GENERAL/.UID
 else 
-	nbrCode=$(wc -l .Datas/.GENERAL/.UID |cut -d " " -f1)
-	if [ "$nbrCode" -eq 0 ]
-	then shuf -i 1990478297-9999999999 -n1 >>.Datas/.GENERAL/.UID
-	fi
+    nbrCode=$(wc -l .Datas/.GENERAL/.UID |cut -d " " -f1)
+    if [ "$nbrCode" -eq 0 ]
+    then shuf -i 1990478297-9999999999 -n1 >>.Datas/.GENERAL/.UID
+    fi
 fi
 
 ###$USER@$HOST
@@ -157,9 +158,10 @@ fi >/dev/null 2>&1
 date="$(date +'%A %x %X')"
 
 ##FICHIER DE SAUVEGARDE DE L'HISTORIQUE GÉNÉRALE
-if  [ ! -e ${_GSTORY} ]
-then touch ${_GSTORY}
+if  [ ! -e "${_GSTORY}" ]
+then touch "${_GSTORY}"
 fi
 
-echo " ${soulign1}   ${null}" >${_GSTORY}
-echo "|→→${whiteBgGrasNoir} $date : LANCEMENT DU PROGRAMME ${null}" >>${_GSTORY}
+echo " ${soulign1}   ${null}" >"${_GSTORY}"
+necho "|→→${whiteBgGrasNoir} $date" >>"${_GSTORY}"
+echo  " : LANCEMENT DU PROGRAMME ${null}" >>"${_GSTORY}"

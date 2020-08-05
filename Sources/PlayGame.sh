@@ -39,7 +39,6 @@ MESSAGE_(){ echo " ";}
 RECOVER_DATA_FOR_CHALENGE_LEVEL
 clear
 
-
 if [ "$DIFFICULTE" = "CHALLENGE" -a ! "$nivCourant1" -eq "$nbrFacile"  ]
 then
 	if [ ! "$nivCourant2" -ge 2 -o "$nivCourant3" -ge 2 ]

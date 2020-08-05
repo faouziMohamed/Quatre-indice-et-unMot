@@ -1,208 +1,170 @@
-
 ReadKey()
 {
-	_OLDSTTY="$(stty -g)" ; stty -echo raw
-	necho "\n\t    ${gras}Appuyez sur une ${null}${jauneS}touche${null}${gras} pour "
-	echo "retouner dans ${grasJaune}le menu précedent${null}    "
-	key="$(head -c1)" ; stty "$_OLDSTTY"
+    _OLDSTTY="$(stty -g)" ; stty -echo raw
+    necho "\n\t    ${gras}Appuyez sur une ${null}"
+    necho "${jauneS}touche${null}${gras} pour "
+    echo "retouner dans ${grasJaune}le menu précedent${null}    "
+    key="$(head -c1)" ; stty "$_OLDSTTY"
 }
 
-ReadKeySuppr(){	_OLDSTTY="$(stty -g)" ; stty -echo raw ; key="$(head -c1)" ; stty "$_OLDSTTY"; }
+ReadKeySuppr()
+{	
+    _OLDSTTY="$(stty -g)" ; stty -echo raw ; 
+    key="$(head -c1)" ; stty "$_OLDSTTY"; 
+}
 
-
-
-
-
-
-								##################################################
-							   ###### FONCTION DE SAISIE DU MOT DE PASSE ##########
-							    ##################################################
+    #########################################
+    ## FONCTION DE SAISIE DU MOT DE PASSE ###
+    #########################################
 
 HUMAN_WRITES_THE_PASSWORD_()
-{    
-
-	#LA VARIABLE 'BS' PREND PREND LE CARACTÈRE GÉNÉRÉ PAR LA TOUCHE "backspace" 
-	BS=$(tput kbs) 	
-
-	###ON DÉSACTIVE LE MODE CANONIQUE ET L'ECHO DES INPUTS 
+{
+    BS=$(tput kbs) 	
     stty -icanon -echo
-    
-    #INITIALISATION DE LA VARIABLE QUI VA PRENDRE LE MOT DE PASSE
     pass=
-
-    #####SAISIE DU MOT DE PASSE
     while true
-    do  CHAR=$(head -c1)                  ###LECTURE D'UNE SEULE CARACTÈRE
-
+    do  CHAR=$(head -c1) ###Read one single char from user input (terminal)
         case "$CHAR" in
-
-        "$BS")  if [ -n "$pass" ]; then   ########LORS DE L'APPUIE SUR LA TOUCHE BACKSPACE, LES ACTIONS SUIVANT SONT FAITES
-                    pass=${pass%?}        ###ON SUPPRIME LE DERNIER CARACTÈRE PAR SUBSTITUE
-                    printf "\b \b"		  ###ON SUPPRIME LE DERNIER ÉTOILE DANS LA SORTIE STANDARD
-                fi 
-                ;;
-
-           "")  printf "\n"; break ;;     ###ON AFFICHE UN SAUT DE LIGNE LORS DE L'APPUIE SUR "RETURN" "ENTRER"
-
-            *)  printf '*'			      ###AFFICHAGE D'UNE ÉTOILE PAR SAISIE
-                pass="${pass}${CHAR}"  	  #AJOUT DE "CHAR" SUR "pass"
-               ;;
+        "$BS")  if [ -n "$pass" ]
+                then pass=${pass%?}
+                     printf "\b \b"
+                fi;;
+           "")  printf "\n"; break ;;
+            *)  printf '*'
+                pass="${pass}${CHAR}";;
         esac
     done
-
-    stty "${_OLDSTTY}" >/dev/null 2>&1    ###RESTAURATION DU MODE NORMAL DU TERMINAL
+    stty "${_OLDSTTY}" >/dev/null 2>&1
 }  
-
-
-
-
-
-
-
-
-							 #####################################################################
-							##############POUR LE CHOIX "HISTORIQUE PERSONNEL" ####################
-							 ####################################################################
-
+    ##############################################
+    ##### POUR LE CHOIX "HISTORIQUE PERSONNEL" ###
+    ##############################################
 
 HEADER_HISTORIQUE_()
 {
-	#date="$(date |cut -f1 -d,)"
-	esp="                            "
-	esp1="                            "
-	line="$esp$esp1                        "
+    #date="$(date |cut -f1 -d,)"
+    esp="                            "
+    esp1="                            "
+    line="$esp$esp1                        "
 
-	necho "${blackBg}$line${gras}\n"
-	necho "${esp}QUATRE "
-	necho "${grasVert}INDICES "
-	necho "ET "
-	necho "${null}${blackBg}${gras}UN "
-	necho "MOT${esp1}"
+    necho "${blackBg}$line${gras}\n"
+    necho "${esp}QUATRE "
+    necho "${grasVert}INDICES "
+    necho "ET "
+    necho "${null}${blackBg}${gras}UN "
+    necho "MOT${esp1}"
 
-	#NOM PARTIE COURANTE
-	necho ""
-	necho "${grasJaune}${soulign2}\n________________________________________________________________________________"
-	necho "${null}${soulign2}${gras}\n-----------------------------"
+    #NOM PARTIE COURANTE
+    necho ""
+    necho "${grasJaune}${soulign2}\n_______________________________"
+    necho "_________________________________________________"
+    necho "${null}${soulign2}${gras}\n-----------------------------"
 
-	necho "${null}${gras}"
-	necho "${bleuPal} HISTORIQUE PERSONNEL ${null}"
-	necho "${gras}${soulign2}"
-	necho "-----------------------------" 
-	necho "${null}"
+    necho "${null}${gras}"
+    necho "${bleuPal} HISTORIQUE PERSONNEL ${null}"
+    necho "${gras}${soulign2}"
+    necho "-----------------------------" 
+    necho "${null}"
 }
-
-
 
 ######Historique Personnel ##########
 HISTORIQUE_PERSONNEL_()
 {
-	clear
-	HEADER_HISTORIQUE_ 
-	necho "${null}${redBg}" 
-	necho "\n\n         ${jour} ${date} "
-	necho "${noir}${gras}\e[43m\t\t\t\t  ${login}   \n"
+    clear
+    HEADER_HISTORIQUE_ 
+    necho "${null}${redBg}" 
+    necho "\n\n         ${jour} ${date} "
+    necho "${noir}${gras}\e[43m\t\t\t\t  ${login}   \n"
 
-	 echo "${null}"
-	#necho "  Utiliser la touche ${grasVert}\"ENTER\"${null} <=> ${grasVert}\"RETURN\"${null} "
-	 #echo "pour voir l'historique ${bleuPal}ligne par ligne ${null}"
-	
-	#necho "    Ou bien la touche ${grasVert}\"ESPACE\"${null} <=> ${grasVert}\"SPACE\"${null} "
-	 #echo "pour voir l'historique ${bleuPal}page par page ${null}"
-
-	 echo "\n\t\t\t\t${gras}DEBUT DE L'HISTORIQUE${null}\n"
-	cat "${_SESSIONLOG}"
+    echo "${null}"
+    echo "\n\t\t\t\t${gras}DEBUT DE L'HISTORIQUE${null}\n"
+    cat "${_SESSIONLOG}"
 }
 
-
-
-
-
-
-						######################################################################################
-					   ####### MENU POUR LE CHOIX "Mon Compte " sur le menu du ficher "interfaceMenu.sh" #######
-					    ######################################################################################
-   
- ######LE MENU #######
+##############################################################################
+# MENU POUR LE CHOIX "Mon Compte " sur le menu du ficher "interfaceMenu.sh" ##
+##############################################################################
 MENU_DES_JOUEURS_CONNECTES_()
 {	
-	headerAccount
-	echo "\n\n  ${whiteBgGrasNoir}${gras} Faites votre choix ${null}\n"
-	echo "\t\t\t${rougeS}${gras}#${null}${gras}1 - ${null}${jauneS}Changer le mot de passe${null}"
-	echo "\t\t\t${rougeS}${gras}#${null}${gras}2 - ${null}${jauneS}Modifier le nom d'utilisateur${null}"
-	echo "\t\t\t${rougeS}${gras}#${null}${gras}3 - ${null}${jauneS}Changer l'adresse E-mail${null}" 
-	echo "\t\t\t${rougeS}${gras}#${null}${gras}4 - ${null}${jauneS}Supprimer mon compte${null}"
-	echo "\t\t      ${degrade}←← ${null}${gras}${italic}5 - ${null}${italic}${bleuCiel}Retourner dans le Menu précedent${null}\n"
+    headerAccount
+    red_bold="${rougeS}${gras}#${null}${gras}"
+    yelow_txt="${null}${jauneS}"
+    back="      ${degrade}←← ${null}${gras}${italic}"
+    cyan_txt="${null}${italic}${bleuCiel}"
+    echo "\n\n  ${whiteBgGrasNoir}${gras} Faites votre choix ${null}\n"
+    echo "\t\t\t${red_bold}1 - ${yelow_txt}Changer le mot de passe${null}"
+    echo "\t\t\t${red_bold}2 - ${yelow_txt}Modifier le nom d'utilisateur${null}"
+    echo "\t\t\t${red_bold}3 - ${yelow_txt}Changer l'adresse E-mail${null}" 
+    echo "\t\t\t${red_bold}4 - ${yelow_txt}Supprimer mon compte${null}"
+    echo "\t\t${back}5 - ${cyan_txt}Retourner dans le Menu précedent${null}\n"
 
-	echo "${bleuPal}${soulign2}${ligne}${null}"
-	#echo "${gras}${whiteBgGrasNoir}${line}${null}"
+    echo "${bleuPal}${soulign2}${line}${null}"
+    #echo "${gras}${whiteBgGrasNoir}${line}${null}"
 
-	LECTURE_DU_CHOIX_
-	CHOIX_SELECTIONNEE_
+    LECTURE_DU_CHOIX_
+    CHOIX_SELECTIONNEE_
 }
 
-######## DETOURNEMENT DU CTRL-C #######
-detournerSIGINT()
+trapSIGINT()
 {	
-	_10ligne="\n\n\n\n\n\n\n\n\n\n"
-	_4ligne="\n\n\n\n"
-	   necho "${_10ligne}${null} ${gras}    Vous avez décidé de ${grasJaune}quitter le jeu${null},"
-	    echo " ${gras}Confirmez-vous cette action${null} [${grasRouge}O${null}/${grasBleu}N${null}]? :  "
-	read choix
+    _10ligne="\n\n\n\n\n\n\n\n\n\n"
+    _4ligne="\n\n\n\n"
+    necho "${_10ligne}${null} ${gras}    "
+    necho "Vous avez décidé de ${grasJaune}quitter le jeu${null},"
+    necho " ${gras}Confirmez-vous cette action${null}"
+    echo " [${grasRouge}O${null}/${grasBleu}N${null}]? :  "
+    read choix
 
-	case "$choix" in
-	         o|O|Oui|OUI|oui) clear
- 							  headerAccount
-							  echo "${_10ligne}${null}${whiteBgGrasNoir}\t\t\t\t Merci et à Bientôt ${null}${_4ligne}"
-							 necho "${gras}${soulign2}\n\n---------------------------"
-						 	 necho "-----------------------------------------------------${null}"
-							  sleep 1
-							   chmod -rwx "${_PLAYER}" "${_SAVE}" "Niveaux/*"  >'/dev/null' 2>&1
-							  exit 0
-							  ;;
-	n|N|No|no|Non|NO|NON) clear
-								MENU_DES_JOUEURS_CONNECTES_
-								exit 0
-								;;
-		                   *) echo "\t\t S'il vous plait veuillez répondre par ${grasRouge}oui ${null} ou${grasBleu} non${null}"
-							  sleep 2.1
-							  clear
-							  detournerSIGINT;exit 0
-							;;
-	esac
+    case "$choix" in
+        o|O|Oui|OUI|oui) 
+        clear
+        headerAccount
+        necho "${_10ligne}${null}${whiteBgGrasNoir}"
+        echo "\t\t\t\t Merci et à Bientôt ${null}${_4ligne}"
+        necho "${gras}${soulign2}\n\n---------------------------------"
+        necho "-----------------------------------------------${null}"
+        sleep 1
+        chmod -rwx "${_PLAYER}" "${_SAVE}" "Niveaux/*" >'/dev/null' 2>&1
+        exit 0;;
+    n|N|No|no|Non|NO|NON) 
+        clear
+        MENU_DES_JOUEURS_CONNECTES_
+        exit 0
+        ;;
+    *) 
+        necho "\t\t S'il vous plait veuillez répondre par"
+        echo " ${grasRouge}oui ${null} ou${grasBleu} non${null}"
+        sleep 2.1
+        clear
+        trapSIGINT;exit 0;;
+    esac
 }
-
 
 ####### ENTÊTE DU MENU ######
-
 headerAccount()
 {
-	#date="$(date |cut -f1 -d,)"
-	esp="                            "
-	esp1="                            "
-	line="$esp$esp1                        "
+    esp="                            "
+    esp1="                            "
+    line="$esp$esp1                        "
 
-	echo "${blackBg}$line${gras}"
-	echo "${line}"
-	necho "${esp}QUATRE "
-	necho "${bleuPal}INDICES "
-	necho "ET "
-	necho "${null}${blackBg}${gras}${blackBg}UN "
-	 echo "${blackBg}MOT${esp1}"
-	necho "${line}"
+    echo "${blackBg}$line${gras}"
+    echo "${line}"
+    necho "${esp}QUATRE "
+    necho "${bleuPal}INDICES "
+    necho "ET "
+    necho "${null}${blackBg}${gras}${blackBg}UN "
+     echo "${blackBg}MOT${esp1}"
+    necho "${line}"
 
-	#NOM PARTIE COURANTE
-	ligne="________________________________________________________________________________"
-	necho ""
-	necho "${vert}${soulign2}${blackBg}${bleuPal}\n${ligne}"
-	necho "${null}${soulign2}${gras}\n----------------------------------"
+    line="____________________________________________"
+    line="${line}____________________________________"
+    necho ""
+    necho "${vert}${soulign2}${blackBg}${bleuPal}\n${line}"
+    necho "${null}${soulign2}${gras}\n----------------------------------"
 
-	necho "${null}${gras}"
-	necho "${rougeS} MON COMPTE ${null}"
-	necho "${gras}${soulign2}"
-	necho "----------------------------------" 
-	necho "${null}"
+    necho "${null}${gras}"
+    necho "${rougeS} MON COMPTE ${null}"
+    necho "${gras}${soulign2}"
+    necho "----------------------------------" 
+    necho "${null}"
 }
-
-
-
-#EOF
